@@ -14,7 +14,7 @@
 
 4. Membuat Proyek Django:
    django-admin startproject projectku
-   cd api_project
+   cd projectku
    python manage.py startapp api
 
 5. Buat Database di mysql:
@@ -43,13 +43,14 @@
    - Di projectku/settings.py, tambahkan 'rest_framework', 'rest_framework_simplejwt.token_blacklist', dan 'api' ke INSTALLED_APPS
    - Tambahkan konfigurasi REST_FRAMEWORK dan SIMPLE_JWT seperti yang ada di langkah 2 dari instruksi sebelumnya
 
-8. Membuat Model, Serializer, dan View:
+8. Membuat Model, Serializer, custom user dan View:
    - Buat model User di api/models.py
    - Buat UserSerializer di api/serializers.py
+   - Buat customuser dan useradmin di api/admin.py
    - Buat RegisterView di api/views.py
 
 9. Konfigurasi URL:
-   - Edit projectku/urls.py sesuai dengan langkah 6 dari instruksi sebelumnya
+   - Edit projectku/urls.py sesuai dengan instruksi sebelumnya
 
 10. Jalankan Migrasi Database:
    - python manage.py makemigrations
