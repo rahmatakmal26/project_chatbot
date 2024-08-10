@@ -1,0 +1,5 @@
+echo # Ignore myenv folder > .gitignore
+
+echo /myenv/ >> .gitignore
+
+type .gitignore
