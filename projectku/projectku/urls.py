@@ -1,11 +1,13 @@
-from django.contrib import admin
 from django.urls import path
+from django.contrib import admin
 from django.urls import path, include
-from .views import WelcomeView
+from karyawan.views import loginView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', loginView, name='login'),
     path('api/', include('api.urls')),
-    path('', WelcomeView.as_view(), name='welcome')
+    path('karyawan/', include('karyawan.urls')),
 ]
 
