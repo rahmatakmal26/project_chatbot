@@ -14,4 +14,6 @@ class Log(models.Model):
 
     def __str__(self):
         return f'Log for {self.user} at {self.login_time}'
+    
+    """test"""
 
