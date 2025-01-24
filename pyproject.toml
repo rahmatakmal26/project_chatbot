@@ -1,0 +1,36 @@
+[project]
+name = "TGA"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Rahmat Akmal", email = "matmal757@gmail.com"},
+]
+dependencies = [
+    "psycopg2>=2.9.10",
+    "python-decouple>=3.8",
+    "django>=5.1.2",
+    "djangorestframework>=3.15.2",
+    "djangorestframework-simplejwt>=5.3.1",
+    "python-dotenv>=1.0.1",
+    "gunicorn>=23.0.0",
+    "nltk>=3.9.1",
+    "datasets>=3.0.1",
+    "numpy>=1.26.0",
+    "psycopg2-binary>=2.9.10",
+    "spacy>=3.8.2",
+    "torch>=2.5.0",
+    "pandas>=2.0.3",
+    "transformers>=4.45.2",
+    "twilio>=9.4.3",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.scripts]
+distribution = true
+manage = "python manage.py"

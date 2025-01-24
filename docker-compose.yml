@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  webdjango2:
+    container_name:  webdjango2
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - APP_HOME=/app
+    volumes:
+      - .:/app  
+      - venv_data:/app/.venv
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app  
+    networks:
+      - db_network
+      - web_network
+    ports:
+      - "8001:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+
+  webnginx2:
+    container_name: webnginx2
+    build: ./nginx
+    ports:
+      - 8688:80
+    volumes:
+       - ./nginx:/etc/nginx/conf.d
+    networks:
+      - web_network
+    depends_on:
+      -  webdjango2  
+    restart: always
+    command: nginx -g 'daemon off;'
+
+volumes:
+  venv_data:  
+  static_volume:
+  assets_volume:
+
+networks:
+  db_network:
+    driver: bridge
+  web_network:
+    driver: bridge

@@ -1,0 +1,215 @@
+[
+    {
+        "intent": "user.ask_about_information_systems",
+        "utterances": [
+            "Apa itu sistem informasi?",
+            "Jelaskan tentang sistem informasi",
+            "Apa manfaat sistem informasi?"
+        ],
+        "answers": [
+            "Sistem informasi adalah kombinasi dari teknologi informasi, orang, dan proses untuk mengumpulkan, memproses, menyimpan, dan mendistribusikan informasi.",
+            "Manfaatnya termasuk peningkatan efisiensi operasional, pengambilan keputusan yang lebih baik, dan dukungan bagi strategi bisnis."
+        ]
+    },
+    {
+        "intent": "user.ask_about_networking",
+        "utterances": [
+            "Apa itu jaringan komputer?",
+            "Jelaskan tentang networking",
+            "Apa saja jenis jaringan komputer?"
+        ],
+        "answers": [
+            "Jaringan komputer adalah sistem yang menghubungkan komputer dan perangkat lain untuk berbagi sumber daya dan informasi.",
+            "Jenis jaringan termasuk LAN (Local Area Network), WAN (Wide Area Network), dan MAN (Metropolitan Area Network)."
+        ]
+    },
+    {
+        "intent": "user.ask_about_database_management",
+        "utterances": [
+            "Apa itu manajemen basis data?",
+            "Jelaskan tentang database",
+            "Apa itu DBMS?"
+        ],
+        "answers": [
+            "Manajemen basis data adalah proses yang melibatkan pengelolaan dan pengorganisasian data dalam sistem basis data.",
+            "DBMS (Database Management System) adalah perangkat lunak yang digunakan untuk membuat dan mengelola database."
+        ]
+    },
+    {
+        "intent": "user.ask_about_web_development",
+        "utterances": [
+            "Apa itu pengembangan web?",
+            "Jelaskan tentang web development",
+            "Bahasa pemrograman yang digunakan untuk web?"
+        ],
+        "answers": [
+            "Pengembangan web adalah proses membangun dan memelihara situs web.",
+            "Bahasa pemrograman yang umum digunakan termasuk HTML, CSS, dan JavaScript untuk pengembangan frontend, serta PHP, Python, dan Ruby untuk backend."
+        ]
+    },
+    {
+        "intent": "user.ask_about_mobile_app_development",
+        "utterances": [
+            "Apa itu pengembangan aplikasi mobile?",
+            "Jelaskan tentang mobile app development",
+            "Platform untuk pengembangan aplikasi mobile?"
+        ],
+        "answers": [
+            "Pengembangan aplikasi mobile adalah proses menciptakan aplikasi untuk perangkat mobile seperti smartphone dan tablet.",
+            "Platform populer termasuk Android dan iOS, dengan bahasa pemrograman seperti Kotlin dan Swift."
+        ]
+    },
+    {
+        "intent": "user.ask_about_data_analysis",
+        "utterances": [
+            "Apa itu analisis data?",
+            "Jelaskan tentang data analysis",
+            "Alat yang digunakan untuk analisis data?"
+        ],
+        "answers": [
+            "Analisis data adalah proses inspeksi, pembersihan, dan pemodelan data untuk menemukan informasi yang berguna.",
+            "Alat yang sering digunakan termasuk Excel, R, Python (pandas), dan Tableau."
+        ]
+    },
+    {
+        "intent": "user.ask_about_artificial_intelligence",
+        "utterances": [
+            "Apa itu kecerdasan buatan?",
+            "Jelaskan tentang artificial intelligence",
+            "Contoh aplikasi AI?"
+        ],
+        "answers": [
+            "Kecerdasan buatan adalah cabang teknologi informasi yang berfokus pada pembuatan sistem yang dapat melakukan tugas yang biasanya memerlukan kecerdasan manusia.",
+            "Contoh aplikasi AI termasuk asisten virtual, pengenalan suara, dan rekomendasi produk."
+        ]
+    },
+    {
+        "intent": "user.ask_about_cloud_computing",
+        "utterances": [
+            "Apa itu komputasi awan?",
+            "Jelaskan tentang cloud computing",
+            "Keuntungan menggunakan cloud?"
+        ],
+        "answers": [
+            "Komputasi awan adalah model pengiriman layanan TI melalui internet, memungkinkan akses ke sumber daya dan data tanpa perlu infrastruktur fisik.",
+            "Keuntungannya termasuk penghematan biaya, skalabilitas, dan aksesibilitas dari mana saja."
+        ]
+    },
+    {
+        "intent": "user.ask_about_cybersecurity",
+        "utterances": [
+            "Apa itu keamanan siber?",
+            "Bagaimana cara melindungi data saya?",
+            "Apa yang dimaksud dengan cybersecurity?"
+        ],
+        "answers": [
+            "Keamanan siber melibatkan langkah-langkah untuk melindungi sistem komputer dan jaringan dari serangan.",
+            "Ini termasuk penggunaan perangkat lunak antivirus, firewall, dan praktik keamanan lainnya."
+        ]
+    },
+    {
+        "intent": "user.ask_about_machine_learning",
+        "utterances": [
+            "Apa itu pembelajaran mesin?",
+            "Bagaimana cara kerja machine learning?",
+            "Contoh penggunaan machine learning?"
+        ],
+        "answers": [
+            "Pembelajaran mesin adalah cabang dari kecerdasan buatan yang fokus pada pengembangan algoritma untuk belajar dari data.",
+            "Ini digunakan dalam berbagai aplikasi seperti rekomendasi produk, pengenalan wajah, dan analisis prediktif."
+        ]
+    },
+    {
+        "intent": "user.ask_about_programming_languages",
+        "utterances": [
+            "Bahasa pemrograman yang paling populer?",
+            "Jelaskan tentang bahasa pemrograman",
+            "Apa itu pemrograman?"
+        ],
+        "answers": [
+            "Bahasa pemrograman adalah alat yang digunakan untuk menulis kode yang memberi instruksi kepada komputer.",
+            "Beberapa bahasa pemrograman populer termasuk Python, Java, dan JavaScript."
+        ]
+    },
+    {
+        "intent": "user.ask_about_ui_ux_design",
+        "utterances": [
+            "Apa itu desain UI/UX?",
+            "Jelaskan tentang UI/UX design",
+            "Mengapa desain UI/UX penting?"
+        ],
+        "answers": [
+            "Desain UI (User Interface) dan UX (User Experience) berfokus pada penciptaan antarmuka yang efektif dan pengalaman pengguna yang baik.",
+            "Desain UI/UX sangat penting karena membantu menciptakan pengalaman pengguna yang intuitif dan menyenangkan, meningkatkan keterlibatan, serta memperbaiki tingkat konversi dengan memudahkan pengguna untuk melakukan tindakan yang diinginkan. Desain yang profesional dan konsisten juga membangun kepercayaan pengguna, yang membuat mereka lebih nyaman dengan brand tersebut. Di tengah persaingan yang ketat, desain UI/UX yang unggul dapat menjadi pembeda signifikan, menarik lebih banyak pelanggan. Selain itu, antarmuka yang jelas dan mudah dipahami mengurangi kebutuhan untuk dukungan pelanggan, sehingga menurunkan biaya terkait. Dengan demikian, investasi dalam desain UI/UX yang baik merupakan langkah strategis untuk kesuksesan jangka panjang produk atau layanan Anda."
+        ]
+    },
+    {
+        "intent": "user.ask_about_blockchain",
+        "utterances": [
+            "Apa itu blockchain?",
+            "Jelaskan tentang teknologi blockchain",
+            "Apa keuntungan blockchain?"
+        ],
+        "answers": [
+            "Blockchain adalah teknologi yang memungkinkan pencatatan transaksi dalam jaringan yang aman dan terdesentralisasi.",
+            "Keuntungannya termasuk transparansi, keamanan, dan ketahanan terhadap pemalsuan."
+        ]
+    },
+    {
+        "intent": "user.ask_about_iot",
+        "utterances": [
+            "Apa itu IoT?",
+            "Jelaskan tentang Internet of Things",
+            "Contoh perangkat IoT?"
+        ],
+        "answers": [
+            "Internet of Things (IoT) adalah jaringan perangkat fisik yang terhubung ke internet, memungkinkan pertukaran data.",
+            "Contoh perangkat IoT termasuk smart home devices, wearable technology, dan sensor industri."
+        ]
+    },
+    {
+        "intent": "user.data",
+        "utterances": [
+            "Tampilkan tabel Mata Kuliah",
+            "Tampilkan tabel Dosen",
+            "Tampilkan tabel Mata Kuliah?"
+        ]
+    },
+    {
+        "intent": "user.data",
+        "utterances": [
+            "Dimana alamat dosen [nama]"
+        ]
+    },
+    {
+        "intent": "user.data",
+        "utterances": [
+            "Siapa nama lengkap bapak [nama]?"
+        ]
+    },
+    {
+        "intent": "sekolah",
+        "utterances": [
+            "kamu sekolah apa"
+        ],
+        "answers": [
+            "kuliah bro"
+        ]
+    },
+    {
+        "intent": "kuliah",
+        "utterances": [
+            "kenapa kamu rajin"
+        ],
+        "answers": [
+            "dosen"
+        ]
+    },
+    {
+        "intent": "user.data",
+        "utterances": [
+            "Tampilkan pdf test3"
+        ]
+    }
+   
+]
