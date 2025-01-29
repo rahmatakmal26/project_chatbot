@@ -140,7 +140,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 BASE_URL = os.environ.get("BASE_URL", default="http://127.0.0.1:8000")
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'src',    # Sesuaikan dengan lokasi yang benar
+    BASE_DIR / 'src',
 ]
 
 MEDIA_URL = '/media/'

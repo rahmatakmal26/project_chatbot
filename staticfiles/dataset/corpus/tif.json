@@ -206,66 +206,10 @@
         ]
     },
     {
-        "intent": "ggggg",
+        "intent": "user.data",
         "utterances": [
-            "hhhh"
-        ],
-        "answers": [
-            "kkkkk"
-        ]
-    },
-    {
-        "intent": "ccccc",
-        "utterances": [
-            "nnnn"
-        ],
-        "answers": [
-            "mmmm"
-        ]
-    },
-    {
-        "intent": "kkkkk",
-        "utterances": [
-            "kkkk"
-        ],
-        "answers": [
-            "kkk"
-        ]
-    },
-    {
-        "intent": "lll",
-        "utterances": [
-            "llll"
-        ],
-        "answers": [
-            "llll"
-        ]
-    },
-    {
-        "intent": "bbbbb",
-        "utterances": [
-            "bbb"
-        ],
-        "answers": [
-            "bbbb"
-        ]
-    },
-    {
-        "intent": "zzz",
-        "utterances": [
-            "zzzz"
-        ],
-        "answers": [
-            "zzzzzz"
-        ]
-    },
-    {
-        "intent": "lklkl",
-        "utterances": [
-            "klklklk"
-        ],
-        "answers": [
-            "lklk"
+            "Tampilkan pdf test3"
         ]
     }
+   
 ]
