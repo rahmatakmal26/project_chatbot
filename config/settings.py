@@ -144,7 +144,8 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'src/panduan_akademik')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'src/data_akademik')
+
 
 
 # Default primary key field type

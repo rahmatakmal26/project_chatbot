@@ -210,6 +210,14 @@
         "utterances": [
             "Tampilkan pdf test3"
         ]
+    },
+    {
+        "intent": "mata kuliah",
+        "utterances": [
+            "apa itu mata kuliah kalkulus"
+        ],
+        "answers": [
+            "kalkulus adalah matematika operator logika"
+        ]
     }
-   
 ]
