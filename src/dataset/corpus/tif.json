@@ -171,8 +171,8 @@
         "intent": "user.data",
         "utterances": [
             "Tampilkan tabel Mata Kuliah",
-            "Tampilkan tabel Dosen",
-            "Tampilkan tabel Mata Kuliah?"
+            "Tampilkan tabel Dosen"
+            
         ]
     },
     {
