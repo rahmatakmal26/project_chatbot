@@ -172,7 +172,6 @@
         "utterances": [
             "Tampilkan tabel Mata Kuliah",
             "Tampilkan tabel Dosen"
-            
         ]
     },
     {
@@ -218,6 +217,24 @@
         ],
         "answers": [
             "kalkulus adalah matematika operator logika"
+        ]
+    },
+    {
+        "intent": "prodi tif",
+        "utterances": [
+            "dimana prodi tif"
+        ],
+        "answers": [
+            "di utu bro"
+        ]
+    },
+    {
+        "intent": "prodi tif",
+        "utterances": [
+            "lantai berapa prodi tif"
+        ],
+        "answers": [
+            "lantai 1"
         ]
     }
 ]
