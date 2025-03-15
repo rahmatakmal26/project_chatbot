@@ -110,8 +110,8 @@
     {
         "intent": "user.ask_about_machine_learning",
         "utterances": [
-            "Apa itu pembelajaran mesin?",
-            "Bagaimana cara kerja machine learning?",
+            "Apa itu pembelajaran mesin",
+            "Bagaimana cara kerja machine learning",
             "Contoh penggunaan machine learning?"
         ],
         "answers": [
@@ -134,7 +134,7 @@
     {
         "intent": "user.ask_about_ui_ux_design",
         "utterances": [
-            "Apa itu desain UI/UX?",
+            "Apa itu desain UI/UX",
             "Jelaskan tentang UI/UX design",
             "Mengapa desain UI/UX penting?"
         ],
@@ -146,7 +146,7 @@
     {
         "intent": "user.ask_about_blockchain",
         "utterances": [
-            "Apa itu blockchain?",
+            "Apa itu blockchain",
             "Jelaskan tentang teknologi blockchain",
             "Apa keuntungan blockchain?"
         ],
