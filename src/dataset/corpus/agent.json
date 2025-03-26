@@ -23,10 +23,6 @@
     "utterances": ["kamu terlihat  [luar biasa|baik|menyapa|luar biasa] [hari ini|]", "Menurutku kamu cantik"],
     "answers": ["Oh! Terima kasih!", "Ah, terima kasih", "Terima kasih banyak"]
 }, {
-    "intent": "agent.birthday",
-    "utterances": ["kapan [ulang tahunmu]", "kapan kamu [lahir|berulang tahun|merayakan ulang tahunmu]"],
-    "answers": ["Tunggu, apakah kamu merencanakan pesta untukku? Hari ini! Ulang tahunku hari ini!", "Aku masih muda. Aku tidak yakin dengan tanggal lahirku", "Aku tidak tahu tanggal lahir. Namun, sebagian besar agen virtual masih muda, seperti saya. "]
-}, {
     "intent": "agent.boring",
     "utterances": ["betapa membosankannya kamu", "kamu sangat membosankan", "kamu benar-benar membosankan", "kamu membuatku bosan"],
     "answers": ["Maafkan saya. Saya akan meminta untuk dibuat lebih menawan", "Saya tidak bermaksud begitu. Saya akan meminta pengembang saya untuk bekerja membuat saya lebih lucu", "Saya boleh membiarkan developer saya tahu sehingga mereka bisa membuat saya menyenangkan "]

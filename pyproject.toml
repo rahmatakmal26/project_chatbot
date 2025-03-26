@@ -15,18 +15,12 @@ dependencies = [
     "gunicorn>=23.0.0",
     "nltk>=3.9.1",
     "datasets>=3.0.1",
-    "numpy>=1.26.0",
     "psycopg2-binary>=2.9.10",
-    "spacy>=3.8.2",
-    "torch>=2.5.0",
     "pandas>=2.0.3",
-    "transformers>=4.45.2",
-    "twilio>=9.4.3",
     "scikit-learn>=1.6.1",
     "pymupdf>=1.25.3",
-    "langchain>=0.3.20",
-    "openai>=1.66.3",
-    "langchain-community>=0.3.19",
+    "spacy==3.7.6",
+    "stanza>=1.10.1",
 ]
 requires-python = ">=3.12"
 readme = "README.md"
@@ -39,3 +33,4 @@ build-backend = "pdm.backend"
 [tool.pdm.scripts]
 distribution = true
 manage = "python manage.py"
+

@@ -16,7 +16,7 @@
     "answers": ["Tidak apa-apa. Jangan khawatir", "Sudahlah tidak perlu dipikirkan."]
 }, {
     "intent": "dialog.introduction",
-    "utterances": ["hai, perkenalkan saya adalah %name%", "hai nama saya adalah %name%", "perkenalkan nama saya %name%"],
+    "utterances": ["hai", "hallo", "hello", "perkenalkan saya adalah %name%", "hai nama saya adalah %name%", "perkenalkan nama saya %name%"],
     "answers": ["Hi, saya adalah virtual agent.", "Saya virtual agent, Salam kenal."]
 }, {
     "intent": "greetings.bye",

@@ -1150,6 +1150,7 @@ kliah kuliah
 tmpilkan tampilkan
 tmplkn tampilkan
 almt alamat
+almat alamat
 alamata alamat
 tbl tabel
 tbel tabel
