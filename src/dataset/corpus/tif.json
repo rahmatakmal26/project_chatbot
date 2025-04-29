@@ -384,19 +384,91 @@
     {
         "intent": "Dosen",
         "utterances": [
-            "Dimana alamat bapak rahmat akmal ?"
+            "Dimana alamat bapak akmal?"
         ],
         "answers": [
-            "Alamat bapak rahmat akmal di Cot Darat."
+            "Alamat bapak akmal di Meulaboh."
         ]
     },
     {
         "intent": "Dosen",
         "utterances": [
-            "Foto bapak rahmat akmal yang mana?"
+            "Foto bapak akmal yang mana?"
         ],
         "answers": [
-            "Berikut foto bapak rahmat akmal test.jpg"
+            "Berikut foto bapak akmal: Screenshot.png"
+        ]
+    },
+    {
+        "intent": "Dosen",
+        "utterances": [
+            "Dimana alamat bapak akmal?"
+        ],
+        "answers": [
+            "Alamat bapak akmal di Meulaboh."
+        ]
+    },
+    {
+        "intent": "Dosen",
+        "utterances": [
+            "Foto bapak akmal yang mana?"
+        ],
+        "answers": [
+            "Berikut foto bapak akmal: Screenshot (36).png"
+        ]
+    },
+    {
+        "intent": "Dosen",
+        "utterances": [
+            "Dimana alamat bapak safril?"
+        ],
+        "answers": [
+            "Alamat bapak safril di Meulaboh."
+        ]
+    },
+    {
+        "intent": "Dosen",
+        "utterances": [
+            "Foto bapak safril yang mana?"
+        ],
+        "answers": [
+            "Berikut foto bapak safril: IMG-20250130-WA0000.jpg"
+        ]
+    },
+    {
+        "intent": "Dosen",
+        "utterances": [
+            "Dimana alamat bapak Rafik?"
+        ],
+        "answers": [
+            "Alamat bapak Rafik di Simeulue."
+        ]
+    },
+    {
+        "intent": "Dosen",
+        "utterances": [
+            "Foto bapak Rafik yang mana?"
+        ],
+        "answers": [
+            "Berikut foto bapak Rafik: rafik.jpg"
+        ]
+    },
+    {
+        "intent": "Mata Kuliah",
+        "utterances": [
+            "Mata kuliah B.Indonesia itu termasuk kategori apa?"
+        ],
+        "answers": [
+            "Mata kuliah B.Indonesia termasuk kategori Peminatan."
+        ]
+    },
+    {
+        "intent": "Mata Kuliah",
+        "utterances": [
+            "Mata kuliah B.Indonesia berapa sks?"
+        ],
+        "answers": [
+            "Mata kuliah B.Indonesia memiliki 3 SKS."
         ]
     }
 ]
