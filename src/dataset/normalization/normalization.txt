@@ -1155,3 +1155,7 @@ alamata alamat
 tbl tabel
 tbel tabel
 pnduan panduan
+tif teknologi informasi
+kajur ketua jurusan
+kaprodi ketua program studi
+prodi program studi

@@ -470,5 +470,32 @@
         "answers": [
             "Mata kuliah B.Indonesia memiliki 3 SKS."
         ]
+    },
+    {
+        "intent": "umum",
+        "utterances": [
+            "Siapa Ketua Jurusan Program Studi Teknologi Informasi sekarang?"
+        ],
+        "answers": [
+            "Bapak Abdurrahman Ridho"
+        ]
+    },
+    {
+        "intent": "umum",
+        "utterances": [
+            "Siapa Ketua Jurusan Program Studi Teknologi Informasi 2023?"
+        ],
+        "answers": [
+            "Bapak Suryadi"
+        ]
+    },
+    {
+        "intent": "umum",
+        "utterances": [
+            "Siapa Ketua Jurusan Program Studi Teknologi Informasi dulu?"
+        ],
+        "answers": [
+            "Bapak Suryadi"
+        ]
     }
 ]
