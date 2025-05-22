@@ -1103,6 +1103,7 @@ uplot	unggah
 uppu	apa
 urang	saya
 urg	saya
+hy hai
 usah	perlu
 utang	hutang
 utk	untuk
@@ -1159,3 +1160,7 @@ tif teknologi informasi
 kajur ketua jurusan
 kaprodi ketua program studi
 prodi program studi
+fto foto
+fot foto
+tga tugas akhir
+pcd pengolahan citra digital

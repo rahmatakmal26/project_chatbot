@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:2c9815d2fbb8cb0cd159be40de9f445abaf3b5ad7838c0187af3dec8cdcfa06e"
+content_hash = "sha256:8b14d5cc06e31cad1b89c18595f382082cd0f1aa7a68324a9565a31801a159a6"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
@@ -463,6 +463,16 @@ dependencies = [
 files = [
     {file = "fsspec-2024.12.0-py3-none-any.whl", hash = "sha256:b520aed47ad9804237ff878b504267a3b0b441e97508bd6d2d8774e3db85cee2"},
     {file = "fsspec-2024.12.0.tar.gz", hash = "sha256:670700c977ed2fb51e0d9f9253177ed20cbde4a3e5c0283cc5385b5870c8533f"},
+]
+
+[[package]]
+name = "fuzzywuzzy"
+version = "0.18.0"
+summary = "Fuzzy string matching in python"
+groups = ["default"]
+files = [
+    {file = "fuzzywuzzy-0.18.0-py2.py3-none-any.whl", hash = "sha256:928244b28db720d1e0ee7587acf660ea49d7e4c632569cad4f1cd7e68a5f0993"},
+    {file = "fuzzywuzzy-0.18.0.tar.gz", hash = "sha256:45016e92264780e58972dca1b3d939ac864b78437422beecebb3095f8efd00e8"},
 ]
 
 [[package]]

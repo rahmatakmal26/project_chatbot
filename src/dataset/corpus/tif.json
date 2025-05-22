@@ -497,5 +497,14 @@
         "answers": [
             "Bapak Suryadi"
         ]
+    },
+    {
+        "intent": "umum",
+        "utterances": [
+            "saya mau pilih pembimbing tugas akhir untuk ambil judul pengolahan citra siapa pembimbing yang cocok?"
+        ],
+        "answers": [
+            "pak sanusi dan pak rivan boleh di ambil untuk dijadikan pembimbing tugas akhir"
+        ]
     }
 ]
