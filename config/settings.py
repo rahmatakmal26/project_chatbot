@@ -1,3 +1,6 @@
+print(">>> settings.py mulai dijalankan")
+
+
 from pathlib import Path
 import os
 
