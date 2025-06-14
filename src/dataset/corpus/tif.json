@@ -220,33 +220,6 @@
         ]
     },
     {
-        "intent": "ukt",
-        "utterances": [
-            "bagaimana cara daftar ukt"
-        ],
-        "answers": [
-            "Tata Cara Daftar UTBK SNBT 2025 dan Langkah-langkahnya Pendaftaran UTBK-SNBT 2025 dilakukan secara online. Oleh karenanya calon peserta perlu memahami tata caranya dengan seksama agar pendaftaran tidak terkendala hal-hal teknis. Berikut ini langkah-langkah daftar UTBK-SNBT 2025 yang perlu dicermati."
-        ]
-    },
-    {
-        "intent": "ukt",
-        "utterances": [
-            "bagaimana cara daftar ukt bro"
-        ],
-        "answers": [
-            "Tata Cara Daftar UTBK SNBT 2025 dan Langkah-langkahnya Pendaftaran UTBK-SNBT 2025 dilakukan secara online. Oleh karenanya calon peserta perlu memahami tata caranya dengan seksama agar pendaftaran tidak terkendala hal-hal teknis. Berikut ini langkah-langkah daftar UTBK-SNBT 2025 yang perlu dicermati."
-        ]
-    },
-    {
-        "intent": "ukt",
-        "utterances": [
-            "bagaimana cara daftar ukt bro"
-        ],
-        "answers": [
-            "Tata Cara Daftar UTBK SNBT 2025 dan Langkah-langkahnya Pendaftaran UTBK-SNBT 2025 dilakukan secara online. Oleh karenanya calon peserta perlu memahami tata caranya dengan seksama agar pendaftaran tidak terkendala hal-hal teknis. Berikut ini langkah-langkah daftar UTBK-SNBT 2025 yang perlu dicermati."
-        ]
-    },
-    {
         "intent": "kuliah",
         "utterances": [
             "bagaimana cara tulis kata pengantar"
