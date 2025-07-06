@@ -19,9 +19,10 @@ dependencies = [
     "pandas>=2.0.3",
     "scikit-learn>=1.6.1",
     "pymupdf>=1.25.3",
-    "spacy==3.7.6",
+    "spacy>=3.8.2",
     "fuzzywuzzy>=0.18.0",
     "sentence-transformers>=4.1.0",
+    "Levenshtein>=0.27.1",
 ]
 requires-python = ">=3.12"
 readme = "README.md"
@@ -30,6 +31,7 @@ license = {text = "MIT"}
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
 
 [tool.pdm]
 distribution = true
