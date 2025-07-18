@@ -1171,7 +1171,6 @@ alamata alamat
 tbl tabel
 tbel tabel
 pnduan panduan
-daftar mendaftar
 sipa siapa
 frm formulir
 form formulir
@@ -1194,6 +1193,7 @@ bapak dosen
 ibu dosen
 ibuk dosen
 buk dosen
+list daftar
 pak dosen
 terimakasih terima kasih
 tq terima kasih
@@ -1201,3 +1201,4 @@ ajukan mengajukan
 isi mengisi
 krs kartu rencana studi
 skp seminar kerja praktek
+matkul mata kuliah
