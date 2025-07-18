@@ -15,4 +15,5 @@ COPY . /app/
 # Jalankan collectstatic setelah semua siap
 RUN pdm run python manage.py collectstatic --noinput
 
-CMD ["pdm", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Jalankan aplikasi dengan gunicorn
+CMD ["pdm", "run", "gunicorn", "tga.wsgi:application", "--bind", "0.0.0.0:8000"]
