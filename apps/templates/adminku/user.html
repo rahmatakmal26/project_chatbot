@@ -1,0 +1,376 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Manage Chatbot Mata Kuliah{% endblock %}
+
+{% block header %}
+<h1>Kelola User</h1>
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+
+nav .form-inline {
+display: flex;
+align-items: center;
+}
+
+nav .form-inline label,
+nav .form-inline select,
+nav .form-inline span {
+    margin-right: 8px;
+}
+
+</style>
+
+<section class="crud-section">
+    <div class="crud-header">
+        <h2><u>Daftar Users</u></h2>
+    </div>
+    <div class="crud-action" style="text-align: right; margin-top: 10px;">
+        <button class="btn-add" onclick="openAddModal()">+ Tambah Users</button>
+    </div>
+
+    <div class="modal fade" id="userModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="userForm" onsubmit="saveUser(event)">
+                    {% csrf_token %}
+                    <input type="hidden" id="is_editing_user" value="false">
+                    <input type="hidden" id="id" name="id">
+
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalUserTitle">Tambah User</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Tutup">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="nama_lengkap">Nama Lengkap:</label>
+                            <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" class="form-control" required>
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Konfirmasi Password:</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role:</label>
+                            <select class="form-control" id="role" name="role" required>
+                                <option value="" disabled selected>Pilih role</option>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <table class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Lengkap</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Aksi</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><input type="text" class="form-control filter-input" data-column="0" placeholder="Cari Nama Lengkap"></th>
+                <th><input type="text" class="form-control filter-input" data-column="1" placeholder="Cari Username"></th>
+                <th><input type="text" class="form-control filter-input" data-column="2" placeholder="Cari Email"></th>
+                <th><input type="text" class="form-control filter-input" data-column="3" placeholder="Cari Role"></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="dataUserTableBody">
+           
+        </tbody>
+    </table>
+
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+
+
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/pagination1.js' %}"></script> 
+
+<script>
+    $(document).ready(function() {
+        fetchDataUser();
+
+    });
+
+    function fetchDataUser() {
+        $.ajax({
+            url: '{% url "data-user" %}', 
+            type: 'GET',
+            success: function(response) {
+                allData = response.data_user;
+                renderTable();
+            },
+            error: function(xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+      
+
+    function renderTable() {
+        const tableBody = $('#dataUserTableBody');
+        const filters = $('.filter-input');
+        
+        let filteredData = allData;
+
+        filters.each(function () {
+            const column = $(this).data('column');
+            const value = $(this).val().toLowerCase().trim();
+            if (value) {
+                filteredData = filteredData.filter(row => {
+                    const data = [row.nama_lengkap, row.username, row.email, row.role];
+                    return data[column].toString().toLowerCase().trim().includes(value);
+                });
+            }
+        });
+
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const endIndex = startIndex + dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+
+        tableBody.empty();
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((user, index) => {
+                tableBody.append(`
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>${user.nama_lengkap}</td>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        
+                        <td>
+                            <button onclick="editData(${user.id})" 
+                                    class="btn btn-sm btn-primary mx-1" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData('${user.id}')" 
+                                    class="btn btn-sm btn-danger mx-1" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="5">Tidak ada data.</td></tr>');
+        }
+
+       renderPagination(filteredData.length, renderTable);
+    }
+
+   
+
+    // CREATE
+
+    function saveUser(event) {
+        event.preventDefault();
+        
+        const isEditing = $('#is_editing_user').val() === 'true';
+        const id = $('#id').val();
+
+        const password = $('#password').val();
+        const confirmPassword = $('#confirm_password').val();
+
+        if (password !== confirmPassword) {
+            alert('Password dan Konfirmasi Password tidak sama!');
+            return;
+        }
+
+        const data = {
+            username: $('#username').val(),
+            email: $('#email').val(),
+            password: password,
+            role: $('#role').val(),
+            nama_lengkap: $('#nama_lengkap').val(),
+        };
+
+        if (isEditing) {
+            
+        $.ajax({
+            url: `/edit-user/${id}/`,
+            type: 'PUT',
+            contentType: 'application/json',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert('Data berhasil diperbarui!');
+                fetchDataUser();
+                closeModal();
+            },
+            error: function (xhr) {
+                alert('Error saat update: ' + xhr.responseText);
+            }
+        });
+
+        } else {
+            
+            $.ajax({
+                url: '{% url "create-user" %}',
+                type: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                data: data,
+                success: function (response) {
+                    alert('Data berhasil disimpan!');
+                    fetchDataUser();
+                    closeModal();
+                },
+                error: function (xhr) {
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+
+    function editData(id) {
+        const user = allData.find(u => u.id === id);
+        if (!user) return alert("User tidak ditemukan!");
+
+        $('#id').val(user.id);
+        $('#username').val(user.username);
+        $('#email').val(user.email);
+        $('#role').val(user.role);
+        $('#nama_lengkap').val(user.nama_lengkap);
+        $('#password').val('');
+        $('#confirm_password').val('');
+
+        $('#is_editing_user').val('true');
+        userModal.show();
+    }
+
+
+
+
+    let userModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const modalEl = document.getElementById('userModal');
+    userModal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    });
+
+    function openAddModal() {
+    console.log('Open Add Modal called');
+    userModal.show();
+    }
+
+    function closeModal() {
+    console.log('Close Modal called');
+    userModal.hide();
+    resetUserForm();
+    }
+
+    function resetUserForm() {
+        const form = document.getElementById('userForm');
+        form.reset();
+        $('#is_editing_user').val('false');
+        $('#id').val('');
+    }
+
+
+    
+
+
+// DELETE
+
+    function deleteData(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            $.ajax({
+                url: `/delete-user/${id}/`,  
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') 
+                },
+                success: function(response) {
+                    alert(response.message); 
+                    fetchDataUser(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    
+</script>
+    
+
+{% endblock %}

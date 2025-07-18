@@ -1,0 +1,41 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/navbar5.css' %}">
+<nav class="navbar">
+    <div class="logo">Konsultasi TIF</div>
+    <ul class="nav-links">
+        <li><a href="{% url 'dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}">Beranda</a></li>
+        <li><a href="{% url 'layanan' %}" class="{% if request.path == '/layanan/' %}active{% endif %}">Layanan</a></li>
+        <li><a href="{% url 'berita' %}" class="{% if request.path == '/berita/' %}active{% endif %}">Berita</a></li>
+
+        <li class="user-info">
+            <span id="user-email"></span>
+        </li>
+        <li>
+            <a href="{% url 'logout' %}">
+                <button class="logout-btn">Logout</button>
+            </a>
+        </li>
+    </ul>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+</nav>
+
+
+<script>
+    function toggleMenu() {
+        var menu = document.querySelector(".nav-links");
+        menu.classList.toggle("show");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const emailSpan = document.getElementById("user-email");
+
+        fetch("/get-email/")
+            .then(response => response.json())
+            .then(data => {
+                emailSpan.textContent = data.email || "Anonymous";
+            })
+            .catch(error => {
+                console.error("Error fetching user info:", error);
+            });
+    });
+</script>

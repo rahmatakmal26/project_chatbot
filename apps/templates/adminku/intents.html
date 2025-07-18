@@ -1,0 +1,341 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Manage Chatbot Answers{% endblock %}
+
+{% block header %}
+<h1>Kelola Jawaban Chatbot False</h1>
+
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+
+    nav .form-inline {
+    display: flex;
+    align-items: center;
+    }
+
+    nav .form-inline label,
+    nav .form-inline select,
+    nav .form-inline span {
+        margin-right: 8px;
+    }
+
+    table.crud-table td:nth-child(2),
+    table.crud-table th:nth-child(2) {
+        max-width: 100px;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    table.crud-table td:nth-child(3),
+    table.crud-table th:nth-child(3) {
+        max-width: 200px;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    table.crud-table td:nth-child(4),
+    table.crud-table th:nth-child(4) {
+        max-width: 300px; 
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    table.crud-table td:nth-child(5),
+    table.crud-table th:nth-child(5) {
+        max-width: 50px; 
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+
+</style>
+
+<section class="crud-section">
+    <div class="crud-header">
+        <h2><u>Daftar Interaksi</u></h2>
+
+    </div>
+    <div class="crud-action" style="text-align: right; margin-top: 10px;">
+        <button class="btn-add" onclick="openAddModal()">+ Tambah Interaksi</button>
+    </div>
+
+    <table class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Interaksi</th>
+                <th>Pertanyaan</th>
+                <th>Jawaban</th>
+                <th>Aksi</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><input type="text" class="form-control filter-input" data-column="0" placeholder="Cari Interaksi"></th>
+                <th><input type="text" class="form-control filter-input" data-column="1" placeholder="Cari Pertanyaan"></th>
+                <th><input type="text" class="form-control filter-input" data-column="2" placeholder="Cari Jawaban"></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="interaksiTableBody">
+           
+        </tbody>
+    </table>
+
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+
+    <div class="modal fade" id="interaksiModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form id="intentForm" action="/insert_chat_intent/" method="POST" onsubmit="saveIntent(event)">
+                    {% csrf_token %}
+                    <input type="hidden" id="edit-id" name="edit-id">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Tambah Interaksi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="intent">Intent:</label>
+                            <input type="text" class="form-control" id="intent" value="Umum" readonly>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="questions">Questions:</label>
+                            <input type="text" class="form-control" id="questions" name="questions" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="answers">Answers:</label>
+                            <textarea name="answers" id="answers" rows="8" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/pagination1.js' %}"></script> 
+<script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
+
+
+<script>
+  CKEDITOR.replace('answers');
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        fetchDataInteraksi();
+
+    });
+
+    function fetchDataInteraksi() {
+        $.ajax({
+            url: '{% url "data-intent" %}',
+            type: 'GET',
+            success: function(response) {
+                allData = (response.data_intent || []).filter(item => item.intent === 'Umum');
+                renderTable();  
+            },
+            error: function(xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function escapeHtml(text) {
+        return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+
+    function renderTable() {
+        const tableBody = $('#interaksiTableBody');
+        tableBody.empty();
+
+        const filters = [];
+        $('.filter-input').each(function () {
+            filters.push($(this).val().toLowerCase());
+        });
+       
+        const filteredData = allData.filter((intr) => {
+        const intent = (intr.intent || '').toLowerCase();
+        const questions = Array.isArray(intr.questions) ? intr.questions.join(' ').toLowerCase() : (intr.questions || '').toLowerCase();
+        const answers = Array.isArray(intr.answers) ? intr.answers.join(' ').toLowerCase() : (intr.answers || '').toLowerCase();
+
+        return (!filters[0] || intent.includes(filters[0])) &&
+            (!filters[1] || questions.includes(filters[1])) &&
+            (!filters[2] || answers.includes(filters[2]));
+        });
+
+
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const endIndex = startIndex + dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((intr, index) => {
+                tableBody.append(`
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>${intr.intent}</td>
+                        <td>${intr.questions}</td> 
+                        <td>${intr.answers}</td>
+                        <td>
+                            <button onclick="editData(${intr.id}, '${escapeHtml(intr.intent)}', '${escapeHtml(intr.questions)}', \`${intr.answers}\`)"
+                                    class="btn btn-sm btn-primary mx-1" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData(${intr.id})" class="btn btn-sm btn-danger mx-1" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="5">Tidak ada data.</td></tr>');
+        }
+
+        renderPagination(filteredData.length, renderTable);
+    }
+
+
+// Create
+
+    function saveIntent(event) {
+        event.preventDefault();
+        const idEdit = $('#intentForm').data('edit-id');
+        const answers = CKEDITOR.instances.answers.getData().trim();
+
+
+        const formData = {
+            intent: $('#intent').val(),
+            questions: $('#questions').val().trim(),
+            answers: CKEDITOR.instances.answers.getData().trim(),
+        };
+
+        let url = '/insert-chat-intent/';
+        let method = 'POST';
+
+        if (idEdit) {
+            url = `/edit-chat-intent/${idEdit}/`;
+            method = 'PUT';
+        }
+
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: "application/json",
+            data: JSON.stringify(formData),
+            headers: { "X-CSRFToken": getCookie("csrftoken") }, 
+            success: function(response) {
+                alert(idEdit ? 'Intent berhasil diupdate!' : 'Intent berhasil disimpan!');
+                $('#intentForm').removeData('edit-id');
+                $('#interaksiModal').hide();
+                location.reload();
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseText);
+            }
+        });
+    }
+
+
+    function editData(id, intent, questions, answers) {
+        $('#modalTitle').text('Edit Pertanyaan Dosen');
+        $('#intent').val(intent);
+        $('#questions').val(questions);
+        CKEDITOR.instances.answers.setData(answers);
+        $('#intentForm').data('edit-id', id);
+
+        interaksiModal.show(); 
+    }
+
+    let interaksiModal;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const modalElement = document.getElementById('interaksiModal');
+        interaksiModal = new bootstrap.Modal(modalElement); 
+    });
+
+    function openAddModal() {
+        $('#intentForm')[0].reset();
+        $('#modalTitle').text('Tambah Interaksi');
+        $('#intentForm').removeData('edit-id');
+
+        interaksiModal.show();
+    }
+
+    function closeModal() {
+        interaksiModal.hide();
+    }
+
+
+    function deleteData(intentId) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            const formData = { id: intentId }; 
+            
+            $.ajax({
+                url: '/delete-chat-intent/', 
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    alert(response.message); 
+                    fetchDataInteraksi(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText); 
+                }
+            });
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+</script>    
+    
+    
+{% endblock %}
+

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Konsultasi Program Studi</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            font-family: 'Courier New', monospace;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #02152a, #033649, #057a8d);
+            animation: gradientBG 10s ease infinite alternate;
+        }
+    
+        @keyframes gradientBG {
+            0% { background-position: left; }
+            100% { background-position: right; }
+        }
+
+        #chatbox {
+            flex: 1;
+            padding: 1rem;
+            height: calc(80vh - 60px); 
+            overflow-y: auto;
+            max-width: 60%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            gap: 0.5rem;
+            margin: 0; 
+        }
+
+        .chatbot-message, .user-message {
+            padding: 0.75rem;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        #chatbox::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #chatbox::-webkit-scrollbar-thumb {
+            background-color: rgba(100, 100, 100, 0.5);
+            border-radius: 4px;
+        }
+
+        #chatbox::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+
+        .chatbot-message {
+            color: #ffffff;
+            padding: 0.75rem;
+            border-radius: 10px;
+            max-width: 75%;
+            word-wrap: break-word;
+            position: relative;
+            animation: fadeIn 0.5s ease-in-out;
+            font-size: 1.10rem;
+        }
+
+     
+        .user-message {
+            background: linear-gradient(135deg, #0e3840, #047186);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 10px;
+            max-width: 75%;
+            word-wrap: break-word;
+            align-self: flex-end; 
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        #user_message {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-right: 0.5rem;
+            outline: none;
+            font-size: 1rem;
+        }
+
+
+
+        .send-button {
+            background: linear-gradient(135deg, #0e3840, #047186);
+            color: white;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+    
+        .send-button:hover {
+            background: #047186;
+            transform: scale(1.05);
+        }
+
+        .suggestions-box {
+            position: absolute;
+            max-width: 500px;
+            color: rgb(255, 255, 255);
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+            border-radius: 8px;
+            padding: 0.5rem;
+            top: 55%; 
+            left: 36%;
+            width: 100%; 
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background-color: #0e3840;
+        }
+
+        .copy-button, .audio-button {
+            background-color: #0e3840;
+            color: white;
+            padding: 0.4rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+        }
+
+        .copy-button:hover {
+            background-color: #047186;
+        }
+
+        .audio-button:hover {
+            background-color: #047186;
+        }
+
+
+
+        .chatbot-message pre {
+            white-space: pre-wrap; 
+            word-wrap: break-word;
+            max-width: 100%; 
+            color: rgb(255, 255, 255);
+        }
+
+
+        /*tampilan modal */
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .modal-header {
+            background-color: #047186;
+            color: rgb(255, 255, 255);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .modal-body img {
+            max-width: 100%;
+            max-height: 100vh;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal.fade .modal-dialog {
+            transform: translate(0, -50px);
+            transition: transform 0.3s ease-out;
+        }
+        .modal.show .modal-dialog {
+            transform: translate(0, 0);
+        }
+
+
+        .chatbot-image-container {
+            text-align: center;
+            margin: 15px 0;
+            }
+            
+        .chatbot-image {
+            max-width: 80%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+            
+        .chatbot-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .chat-input {
+            position: fixed;
+            bottom: 5%;
+            left: 50%;
+            width: 60%;
+            background-color: #02152a;
+            padding: 0.5rem;
+            border-top: 1px solid #444;
+            z-index: 10;
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem;
+            border-radius: 12px;  
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5); 
+            transform: translateX(-50%);
+        }
+
+
+        .chat-input input {
+            background-color: rgb(10, 38, 58);
+            color: white;
+            border: 1px solid #444;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .chat-input.centered-input {
+                top: 50%;
+                bottom: auto; 
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+         .welcome-message {
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-align: center;
+            color: #fff;
+            padding: 1rem;
+            position: absolute;
+            top: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            max-width: 90%;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10; 
+        }
+
+        
+        @media (max-width: 600px) {
+            .welcome-message {
+                top: 120px; 
+                font-size: 1.2rem;
+                padding-bottom: 2rem;
+            }
+
+            .chat-input {
+                width: 90%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+
+    </style>
+
+</head>
+<body>
+
+{% include 'navbar.html' %}  
+          
+
+{% load static %}
+       
+
+    <div class="chatbot-message welcome-message" id="welcome-message">
+            <b>🤖:</b> Halo <span id="username"></span>! Ada yang bisa saya bantu?
+    </div>
+
+     <!-- terakhir -->
+    <div id="chatbox"></div> 
+
+    <!-- 1 -->
+    <div id="suggestions" class="suggestions-box"></div>
+        <div class="chat-input centered-input">
+            
+        <!-- User mengetik pesan di input -->
+        <input type="text" id="user_message" placeholder="Ketik pesan Anda..." onkeydown="if(event.key === 'Enter') sendMessage()">
+        
+        <button class="send-button" onclick="sendMessage()">Kirim</button>
+    </div>
+            
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xxl w-100">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Foto Dosen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Foto Dosen" class="img-fluid mb-3">
+                    <br>
+                    <a id="downloadBtn" href="" download class="btn btn-primary">
+                        Download Gambar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+<script>
+
+    let isTyping = false;
+    let suggestionDisplayedOnce = false;
+
+    function typeWriter(element, html, speed = 5, callback = null) {
+        let i = 0;
+        let isTag = false;
+        let text = '';
+        isTyping = true;
+
+        function type() {
+            if (i < html.length) {
+                let char = html[i++];
+                if (char === '<') isTag = true;
+                text += char;
+                if (char === '>') isTag = false;
+
+                element.innerHTML = text;
+
+                if (isTag || speed === 5) {
+                    requestAnimationFrame(type); 
+                } else {
+                    setTimeout(type, speed); 
+                }
+            } else {
+                isTyping = false;
+                if (callback) callback();
+            }
+        }
+
+        text = '';
+        element.innerHTML = '';
+        type();
+    }
+
+
+
+    function speakText(text, button) {
+        const decoded = decodeURIComponent(text);
+
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = decoded;
+        const plainText = tempDiv.innerText || tempDiv.textContent;
+
+        const utterance = new SpeechSynthesisUtterance(plainText);
+        utterance.lang = 'id-ID'; 
+        utterance.rate = 1;
+
+        speechSynthesis.speak(utterance);
+
+        button.innerHTML = "🔇";
+        button.disabled = true;
+
+        utterance.onend = () => {
+            button.innerHTML = "🔊";
+            button.disabled = false;
+        };
+    }
+
+
+    function copyMessage(text, button) {
+        const decoded = decodeURIComponent(text);
+
+        const blob = new Blob([decoded], { type: "text/html" });
+        const data = [new ClipboardItem({ "text/html": blob })];
+
+        navigator.clipboard.write(data).then(() => {
+            button.innerHTML = "✔️"; 
+            setTimeout(() => {
+                button.innerHTML = "📋"; 
+            }, 2000);
+        }).catch(err => {
+            console.error("Gagal menyalin HTML:", err);
+        });
+    }
+
+
+    
+    function sendMessage() {
+
+        if (isTyping) {
+            console.log("Tunggu hingga efek mengetik selesai.");
+            return;
+        }
+
+        const suggestions = document.getElementById('suggestions');
+            if (suggestions) {
+                suggestions.innerHTML = '';
+                suggestions.style.display = 'none';
+            }
+            suggestionDisplayedOnce = true;
+
+        const chatbox = document.getElementById('chatbox');
+
+        // bawah 
+        const chatInput = document.querySelector('.chat-input');
+        if (chatInput.classList.contains('centered-input')) {
+            chatInput.classList.remove('centered-input');
+            chatInput.style.bottom = '5%';
+            chatInput.style.top = 'auto';
+            chatInput.style.left = '20%';
+            chatInput.style.transform = 'none';
+        }
+
+        //  Ambil isi input user
+        const message = document.getElementById('user_message').value;
+
+        const welcomeMessage = document.getElementById('welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.style.display = 'none';
+        }
+
+
+        const userMessageElement = document.createElement('p');
+        userMessageElement.classList.add('user-message');
+        userMessageElement.textContent = message;
+        chatbox.appendChild(userMessageElement);
+        document.getElementById('user_message').value = '';
+        
+
+         //  Kirim pesan ke backend Django lewat fetch POST
+        fetch('/apps/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ user_input: message })
+        })
+
+
+
+        .then(jawaban => { //kembalikan dari backend chatbot
+            if (!jawaban.ok) {
+                throw new Error('Network jawaban was not ok');
+            }
+            return jawaban.json();
+        })
+
+        .then(data => {
+            console.log("Respons dari backend:", data); 
+
+            if (!data.jawaban || !data.jawaban.text) return;
+
+            const rawText = data.jawaban.text; 
+            // const messageContent = rawText.replace(/\n/g, "<br>"); 
+
+            const jawabanId = `jawaban-${Date.now()}`;
+            if (!chatbox.querySelector(`[data-jawaban-id="${jawabanId}"]`)) {
+                const chatbotMessage = document.createElement('div');
+                chatbotMessage.classList.add('chatbot-message');
+                chatbotMessage.setAttribute("data-jawaban-id", jawabanId);
+
+                chatbotMessage.innerHTML = `
+                    <div class="message-text"></div>
+                    <div class="button-container">
+                        
+                        <button class="copy-button" onclick="copyMessage(this.dataset.text, this)" data-text="${encodeURIComponent(rawText)}">📋</button>
+                        <button class="audio-button" onclick="speakText(this.dataset.text, this)" data-text="${encodeURIComponent(rawText)}">🔊</button>
+
+                    </div>
+                `;
+
+                document.getElementById("chatbox").appendChild(chatbotMessage); //menampilkan jawaban ke id
+
+                const messageElement = chatbotMessage.querySelector(".message-text");
+
+                typeWriter(messageElement, rawText, 20, () => {
+                    if (data.jawaban.file && data.jawaban.file !== "None" && data.jawaban.file.trim() !== "") {
+                        const fileName = data.jawaban.file;
+                        const fileExtension = fileName.split('.').pop().toLowerCase();
+                        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                        const filePathImage = `/static/data_akademik/foto/${fileName}`;
+                        const filePathDokumen = `/static/data_akademik/dokumen/${fileName}`;
+
+                        if (imageExtensions.includes(fileExtension)) {
+                            const imageContainer = document.createElement("div");
+                            imageContainer.classList.add("chatbot-image-container");
+                            imageContainer.innerHTML = `
+                                <img src="${filePathImage}" alt="jawaban Image" class="chatbot-image" style="cursor: pointer;" onclick="openModal('${filePathImage}')" onerror="this.onerror=null; this.style.display='none';">
+                            `;
+                            chatbotMessage.appendChild(imageContainer);
+                        } 
+                        
+                        else if (fileExtension === 'pdf') {
+                            const fileContainer = document.createElement("div");
+                            fileContainer.classList.add("chatbot-file-container");
+                            fileContainer.innerHTML = `
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <iframe src="${filePathDokumen}" width="50%" height="400px"
+                                        style="border: none; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 10px;">
+                                    </iframe>
+                                    <p style="margin-top: 10px; font-weight: bold; text-align: center;">
+                                        <a href="${filePathDokumen}" target="_blank" style="text-decoration: none; color: #007bff;">
+                                            ${fileName}
+                                        </a>
+                                    </p>
+                                </div>
+                            `;
+                            chatbotMessage.appendChild(fileContainer);
+                        } 
+                        
+                       else {
+                            const iconMap = {
+                                'doc': 'fa-file-word',
+                                'docx': 'fa-file-word',
+                                'xls': 'fa-file-excel',
+                                'xlsx': 'fa-file-excel',
+                                'ppt': 'fa-file-powerpoint',
+                                'pptx': 'fa-file-powerpoint',
+                            };
+
+                            const colorMap = {
+                                'doc': '#007bff',     
+                                'docx': '#007bff',
+                                'xls': '#28a745',     
+                                'xlsx': '#28a745',
+                                'ppt': '#fd7e14',
+                                'pptx': '#fd7e14',
+                            };
+
+                            const fileIconClass = iconMap[fileExtension] || 'fa-file-alt';
+                            const iconColor = colorMap[fileExtension] || '#6c757d';
+
+                            const fileContainer = document.createElement("div");
+                            fileContainer.classList.add("chatbot-file-container");
+                            fileContainer.innerHTML = `
+                                <div style="text-align: center;">
+                                    <p style="font-weight: bold; font-size: 16px;">
+                                        <i class="fas ${fileIconClass}" style="font-size: 32px; color: ${iconColor}; margin-right: 8px; cursor: pointer;" 
+                                        onclick="window.open('${filePathDokumen}', '_blank')"></i><br>
+                                    </p>
+                                    <span style="text-decoration: none; color: ${iconColor}; cursor: default;">
+                                        ${fileName}
+                                    </span>
+                                </div>
+                            `;
+
+                            chatbotMessage.appendChild(fileContainer);
+                        }
+
+
+                        }
+
+                            chatbox.scrollTop = chatbox.scrollHeight;
+                        });
+
+                        document.getElementById('user_message').value = '';
+
+                    }
+                })
+                
+                .catch(error => {
+                    console.error("Error saat mengirim pesan:", error);
+                });
+            }
+    
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+    const inputField = document.getElementById("user_message");
+    const suggestionsBox = document.getElementById("suggestions");
+
+
+    inputField.addEventListener("input", () => {
+        const userInput = inputField.value;
+
+        if (userInput.length >= 2 && !suggestionDisplayedOnce) {
+            fetch('/get-suggestions/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ user_input: userInput })
+            })
+            .then(jawaban => jawaban.json())
+            .then(data => {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.style.display = 'none';
+
+                if (data.suggestions && data.suggestions.length > 0) {
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.textContent = suggestion;
+                        suggestionItem.className = 'suggestion-item';
+                        suggestionItem.onclick = () => {
+                            inputField.value = suggestion;
+                            suggestionsBox.style.display = 'none';
+                        };
+                        suggestionsBox.appendChild(suggestionItem);
+                    });
+
+                    suggestionsBox.style.display = 'block';
+                    suggestionDisplayedOnce = false; 
+                }
+            })
+            .catch(error => console.error('Error fetching suggestions:', error));
+        } else {
+            suggestionsBox.innerHTML = '';
+            suggestionsBox.style.display = 'none';
+        }
+    });
+
+
+    document.querySelector('.btn-close').addEventListener('click', function() {
+        var imageModal = bootstrap.Modal.getInstance(document.getElementById('imageModal'));
+        imageModal.hide();
+    });
+
+
+    function openModal(imageUrl) {
+        const modalImage = document.getElementById('modalImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        modalImage.src = imageUrl;
+        downloadBtn.href = imageUrl;
+
+        const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+        imageModal.show();
+    }
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Manage Chatbot Mata Kuliah{% endblock %}
+
+{% block header %}
+<h1>Kelola Data Mata Kuliah</h1>
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<section class="crud-section">
+    <div class="crud-header">
+        <h2><u>Daftar Mata Kuliah</u></h2>
+    </div>
+    <div class="crud-action" style="text-align: right; margin-top: 10px;">
+        <button class="btn-add" onclick="openAddModal()">+ Tambah Mata Kuliah</button>
+    </div>
+
+    <table class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Kode MK</th>
+                <th>Nama MK</th>
+                <th>SKS</th>
+                <th>Semester</th>
+                <th>Jenis MK</th>
+                <th>Aksi</th>
+            </tr> 
+            <tr>
+                <th></th>
+                <th><input type="text" class="form-control filter-input" data-column="0" placeholder="Cari Kode MK"></th>
+                <th><input type="text" class="form-control filter-input" data-column="1" placeholder="Cari Nama MK"></th>
+                <th><input type="text" class="form-control filter-input" data-column="2" placeholder="Cari SKS"></th>
+                <th><input type="text" class="form-control filter-input" data-column="3" placeholder="Cari Semester"></th>
+                <th><input type="text" class="form-control filter-input" data-column="4" placeholder="Cari Jenis MK"></th>
+                <th></th>
+            </tr>
+            
+        </thead>
+        <tbody id="mataKuliahTableBody"></tbody>
+    </table>
+
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+        
+
+    <!-- Modal -->
+    <div class="modal fade" id="matkulModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">Tambah Mata Kuliah</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        <form id="matkulForm" onsubmit="saveMatkul(event)">
+            <div class="modal-body">
+            {% csrf_token %}
+            <input type="hidden" id="is_editing" name="is_editing" value="false">
+
+            <div class="form-group">
+                <label for="kode_mk">Kode Mata Kuliah:</label>
+                <input type="text" class="form-control" id="kode_mk" name="kode_mk" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nama_mk">Nama Mata Kuliah:</label>
+                <input type="text" class="form-control" id="nama_mk" name="nama_mk" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sks">SKS:</label>
+                <input type="number" class="form-control" id="sks" name="sks" required>
+            </div>
+
+            <div class="form-group">
+                <label for="semester">Semester:</label>
+                <input type="number" class="form-control" id="semester" name="semester" required>
+            </div>
+
+            <div class="form-group">
+                <label for="jenis_mk">Jenis Mata Kuliah:</label>
+                <select class="form-control" id="jenis_mk" name="jenis_mk" required>
+                <option value="">-- Pilih Jenis --</option>
+                <option value="Wajib">Wajib</option>
+                <option value="Umum">Umum</option>
+                <option value="Peminatan RPL">Peminatan RPL</option>
+                <option value="Peminatan SI">Peminatan SI</option>
+                <option value="Peminatan Jaringan">Peminatan Jaringan</option>
+                </select>
+            </div>
+
+            </div>
+
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">Tutup</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+    </div>
+
+    
+</section>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+<script src="{% static 'js/pagination1.js' %}"></script> 
+
+
+<script>
+    
+
+    $(document).ready(function () {
+        fetchDataMatKul();
+
+    });
+
+    function fetchDataMatKul() {
+        $.ajax({
+            url: '{% url "mata-kuliah" %}',
+            type: 'GET',
+            success: function (response) {
+                allData = response.data_mk;
+                renderTable();
+            },
+            error: function (xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function renderTable() {
+        const tableBody = $('#mataKuliahTableBody');
+        tableBody.empty();
+
+        const filters = $(".filter-input").map(function () {
+            return $(this).val().toLowerCase();
+        }).get();
+
+        const filteredData = allData.filter((mk) => {
+            return (!filters[0] || mk.kode_mk.toLowerCase().includes(filters[0])) &&
+                (!filters[1] || mk.nama_mk.toLowerCase().includes(filters[1])) &&
+                (!filters[2] || mk.sks.toString().includes(filters[2])) &&
+                (!filters[3] || mk.semester.toString().includes(filters[3])) &&
+                (!filters[4] || mk.jenis_mk.toLowerCase().includes(filters[4]));
+        });
+
+        const { halamanAktif, dataPerPage } = getPaginationConfig();
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const endIndex = startIndex + dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((mk, i) => {
+                tableBody.append(`
+                    <tr>
+                        <td>${startIndex + i + 1}</td>
+                        <td>${mk.kode_mk}</td>
+                        <td>${mk.nama_mk}</td>
+                        <td>${mk.sks}</td>
+                        <td>${mk.semester}</td>
+                        <td>${mk.jenis_mk}</td>
+                        <td>
+                            <button onclick="editData('${mk.kode_mk}', '${mk.nama_mk}', '${mk.sks}', '${mk.semester}', '${mk.jenis_mk}')" class="btn btn-sm btn-primary mx-1" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData('${mk.kode_mk}')" class="btn btn-sm btn-danger mx-1" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="7">Tidak ada data.</td></tr>');
+        }
+
+        renderPagination(filteredData.length, renderTable);
+    }
+
+
+    
+
+    function saveMatkul(event) {
+        event.preventDefault();
+    
+        const kode_mk = $('#kode_mk').val();
+        const isEditing = $('#is_editing').val() === 'true';
+    
+        let url = '{% url "create-mata-kuliah" %}';
+        let type = 'POST';
+    
+        if (isEditing) {
+            url = `/edit-matkul/${kode_mk}/`;
+            type = 'PUT';
+        }
+    
+        const data = {
+            kode_mk: $('#kode_mk').val(),
+            nama_mk: $('#nama_mk').val(),
+            sks: $('#sks').val(),
+            semester: $('#semester').val(),
+            jenis_mk: $('#jenis_mk').val()
+        };
+    
+        $.ajax({
+            url: url,
+            type: type,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                alert('Data berhasil disimpan!');
+                fetchDataMatKul();
+                closeModal();
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseText);
+            }
+        });
+    }
+        
+
+    function editData(kode_mk, nama_mk, sks, semester, jenis_mk) {
+        $('#kode_mk').val(kode_mk).prop('readonly', true); 
+        $('#nama_mk').val(nama_mk);
+        $('#sks').val(sks);
+        $('#semester').val(semester);
+        $('#jenis_mk').val(jenis_mk);
+        $('#is_editing').val('true');
+        $('#modalTitle').text('Edit Mata Kuliah');
+        openAddModal();
+    }
+    
+
+    function deleteData(kode_mk) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            $.ajax({
+                url: `/delete-matkul/${kode_mk}/`,  
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') 
+                },
+                success: function(response) {
+                    alert(response.message); 
+                    fetchDataMatKul(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function openAddModal() {
+        $('#matkulModal').modal('show');
+    }
+
+    
+    
+    function closeModal() {
+        $('#matkulModal').modal('hide');
+        $('#matkulForm')[0].reset();
+        $('#kode_mk').prop('readonly', false);
+        $('#is_editing').val('false');
+        $('#modalTitle').text('Tambah Mata Kuliah');
+    }
+
+    
+</script>
+
+{% endblock %}

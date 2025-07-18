@@ -1,0 +1,362 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Manage Chatbot Berita{% endblock %}
+
+{% block header %}
+<h1>Kelola Data Berita</h1>
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+    #modalImage {
+        width: 100vw;
+        height: auto;
+        max-height: 90vh;
+        object-fit: contain; 
+    }
+    .modal-dialog {
+        max-width: 100vw;
+        margin: 0;
+    }
+    
+    table.crud-table td:nth-child(3),
+    table.crud-table th:nth-child(3) {
+        max-width: 900px;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+</style>
+
+<section class="crud-section">
+    <div class="crud-header">
+        <h2><u>Daftar Berita</u></h2>
+    </div>
+    <div class="crud-action" style="text-align: right; margin-top: 10px;">
+        <button class="btn-add" onclick="openModal()">+ Tambah Berita</button>
+    </div>
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xxl w-100">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">File Berita</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Foto Dosen" class="img-fluid">
+            </div>
+            </div>
+        </div>
+    </div>
+           
+    <div class="modal fade" id="beritaModal" tabindex="-1" aria-labelledby="beritaModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+            <form id="beritaForm" onsubmit="saveBerita(event)" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" id="id" name="id" value="">
+
+                <div class="modal-header">
+                <h5 class="modal-title" id="beritaModalLabel">Tambah Berita</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
+                </div>
+
+                <div class="modal-body">
+                <label for="nama" class="form-label">Judul Berita:</label>
+                <input type="text" class="form-control" id="nama" name="nama" required>
+
+                <label for="deskripsi" class="form-label mt-3">Deskripsi:</label>
+                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="8" required></textarea>
+
+                <label for="file_berita" class="form-label mt-3">File Berita:</label>
+                <input type="file" class="form-control" id="file_berita" name="file_berita">
+                <div id="current_file" class="mt-2"></div>
+                </div>
+
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Judul Berita</th>
+                <th>Deskripsi</th>
+                <th>File Berita</th>
+                <th>Created Time</th>
+                <th>Updated Time</th>
+                <th>Created By</th>
+                <th>Aksi</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><input type="text" class="form-control filter-input" data-column="0" placeholder="Cari Berita"></th>
+                <th><input type="text" class="form-control filter-input" data-column="1" placeholder="Cari Deskripsi"></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="beritaTableBody">
+           
+        </tbody>
+    </table>
+
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/pagination1.js' %}"></script> 
+
+<script>
+
+    $(document).ready(function() {
+        fetchDataBerita();
+
+    });
+
+    function fetchDataBerita() {
+        $.ajax({
+            url: '{% url "data-berita" %}', 
+            type: 'GET',
+            success: function(response) {
+                allData = response.data_berita;
+                halamanAktif = 1;
+                renderTable();
+            },
+            error: function(xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function formatToWIB(datetimeString) {
+        const date = new Date(datetimeString);
+        return date.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+    }
+
+
+    function renderTable() {
+        const filterJudul = $(".filter-input[data-column='0']").val().toLowerCase().trim();
+        const filterDeskripsi = $(".filter-input[data-column='1']").val().toLowerCase().trim();
+    
+        const filteredData = allData.filter(item => {
+            const judul = item.nama.toLowerCase().trim();
+            const deskripsi = item.deskripsi.toLowerCase().trim();
+            return judul.includes(filterJudul) && deskripsi.includes(filterDeskripsi);
+        });
+    
+        const tableBody = $('#beritaTableBody');
+        tableBody.empty();
+    
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const endIndex = startIndex + dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+    
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((brta, index) => {
+                tableBody.append(`
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>${brta.nama}</td>
+                        <td>${brta.deskripsi}</td>
+                        <td>
+                            <img src="/media/${brta.file_berita}" alt="File Berita" width="50"
+                                onclick="showImageModal('/media/${brta.file_berita}')" 
+                                style="cursor: pointer;">
+                        </td>
+                        <td>${formatToWIB(brta.created_time)}</td>
+                        <td>${formatToWIB(brta.updated_time)}</td>
+                        <td>${brta.id_user}</td>
+                        <td>
+                            <button 
+                                class="btn btn-sm btn-primary mx-1 btn-edit" 
+                                title="Edit"
+                                data-id="${brta.id}" 
+                                data-nama="${encodeURIComponent(brta.nama)}"
+                                data-deskripsi="${encodeURIComponent(brta.deskripsi)}"
+                                data-file="${brta.file_berita}">
+                                <i class="fa fa-edit"></i>
+                            </button>
+
+                            <button onclick="deleteData(${brta.id})" 
+                                class="btn btn-sm btn-danger mx-1" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="8" class="text-center">Tidak ada data.</td></tr>');
+        }
+    
+        renderPagination(filteredData.length, renderTable);
+
+        $('.btn-edit').on('click', function () {
+            const id = $(this).data('id');
+            const nama = decodeURIComponent($(this).data('nama'));
+            const deskripsi = decodeURIComponent($(this).data('deskripsi'));
+            const file = $(this).data('file');
+            editData(id, nama, deskripsi, file);
+        });
+
+    }
+    
+
+    function saveBerita(event) {
+        event.preventDefault();
+    
+        const formData = new FormData(document.getElementById('beritaForm'));
+        const id = $('#id').val();
+        const url = id ? `/edit-berita/${id}/` : '{% url "create-berita" %}';
+        const type = 'POST'; 
+    
+        if (id) {
+            formData.append('_method', 'PUT');
+        }
+    
+        const fileInput = $('#file_berita')[0];
+        if (!fileInput.files.length) {
+            const existingFile = $('#current_file a').attr('href');
+            if (existingFile) {
+                formData.append('file_berita', existingFile.split('/').pop());
+            }
+        }
+    
+        $.ajax({
+            url: url,
+            type: type,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function(response) {
+                alert('Data berhasil disimpan!');
+                fetchDataBerita();
+                closeModal();
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseText);
+            }
+        });
+    }    
+
+   function editData(id, nama, deskripsi, file_berita) {
+    document.getElementById('id').value = id;
+    document.getElementById('nama').value = nama;
+    document.getElementById('deskripsi').value = deskripsi;
+
+    if (file_berita) {
+        document.getElementById('current_file').innerHTML =
+        `File saat ini: <a href="/media/${file_berita}" target="_blank">${file_berita}</a>`;
+    } else {
+        document.getElementById('current_file').innerHTML = '';
+    }
+
+    document.getElementById('beritaModalLabel').textContent = 'Edit Berita';
+    openModal();
+    }
+
+
+    let beritaModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const modalEl = document.getElementById('beritaModal');
+    beritaModal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    });
+
+    function openModal() {
+    beritaModal.show();
+    }
+
+    function closeModal() {
+    beritaModal.hide();
+    resetBeritaForm();
+    }
+
+    function resetBeritaForm() {
+    document.getElementById('beritaForm').reset();
+    document.getElementById('id').value = '';
+    document.getElementById('current_file').innerHTML = '';
+    document.getElementById('beritaModalLabel').textContent = 'Tambah Berita';
+    }
+        
+
+    function deleteData(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            $.ajax({
+                url: `/delete-berita/${id}/`,  
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') 
+                },
+                success: function(response) {
+                    alert(response.message); 
+                    fetchDataBerita(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+  
+    function showImageModal(imageUrl) {
+        $('#modalImage').attr('src', imageUrl);
+        $('#imageModal').modal('show');
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+<style>
+    .sidebar .nav-link {
+        color: #ffffff;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 5px;
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .sidebar .nav-link.active {
+        background-color: #3a5b7d; 
+        color: #ffffff;
+        font-weight: bold;
+        border-left: 5px solid #ffcc00; 
+    }
+    
+    .sidebar .nav-link:hover {
+        background-color: #0056b3;
+        color: white;
+        transform: scale(1.05); 
+    }
+    
+    
+</style>
+
+<div class="sidebar">
+    <h3>Admin Chatbot</h3>
+    <ul>
+        <li>
+            <a href="{% url 'dashboard_admin' %}" 
+               class="nav-link {% if request.resolver_match.url_name == 'dashboard_admin' %}active{% endif %}">
+               <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle"  
+            data-bs-toggle="collapse" data-bs-target="#Dropdown" aria-expanded="false">
+            <i class="fas fa-comments"></i>Interaksi
+        </a>
+        <div id="Dropdown" 
+           class="collapse {% if request.resolver_match.url_name == 'intents' or request.resolver_match.url_name == 'kategori_interaksi' or request.resolver_match.url_name == 'history' or request.resolver_match.url_name == 'answer_false' %}show{% endif %}">
+            <ul class="list-unstyled">
+                <li><a class="nav-link {% if request.resolver_match.url_name == 'intents' %}active{% endif %}" href="{% url 'intents' %}">Interaksi Umum</a></li>
+                <li><a class="nav-link {% if request.resolver_match.url_name == 'kategori_interaksi' %}active{% endif %}" href="{% url 'kategori_interaksi' %}">Kategori Interaksi</a></li>
+                <li><a class="nav-link {% if request.resolver_match.url_name == 'history' %}active{% endif %}" href="{% url 'history' %}">Log Interaksi</a></li>
+                <li><a class="nav-link {% if request.resolver_match.url_name == 'answer_false' %}active{% endif %}" href="{% url 'answer_false' %}">Answers False</a></li>
+            </ul>
+        </div>
+
+        </li>
+        
+        <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle"  
+            data-bs-toggle="collapse" data-bs-target="#Dropdown2" aria-expanded="false">
+            <i class="fas fa-database"></i>Data
+        </a>
+        <div id="Dropdown2" 
+            class="collapse {% if request.resolver_match.url_name == 'matakuliah' or request.resolver_match.url_name == 'dosen' or request.resolver_match.url_name == 'panduan' or request.resolver_match.url_name == 'pengampu_mk' or request.resolver_match.url_name == 'berita_admin' %}show{% endif %}">
+
+            <ul class="list-unstyled">
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'matakuliah' %}active{% endif %}" href="{% url 'matakuliah' %}">Data Matkul</a>
+                </li>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'dosen' %}active{% endif %}" href="{% url 'dosen' %}">Data Dosen</a>
+                </li>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'pengampu_mk' %}active{% endif %}" href="{% url 'pengampu_mk' %}">Data Pengampu MK</a>
+                </li>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'panduan' %}active{% endif %}" href="{% url 'panduan' %}">Data Panduan</a>
+                </li>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'berita_admin' %}active{% endif %}" href="{% url 'berita_admin' %}">Data Berita</a>
+                </li>
+            </ul>
+        </div>
+        </li>
+        <li>
+            <a href="{% url 'user' %}" 
+               class="nav-link {% if request.resolver_match.url_name == 'user' %}active{% endif %}">
+               <i class="fas fa-user"></i> User
+            </a>
+        </li>
+        
+    </ul>
+    
+</div>

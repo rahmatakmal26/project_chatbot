@@ -1,0 +1,855 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Manage Chatbot Answers{% endblock %}
+
+{% block header %}
+<h1>Kelola Jawaban Chatbot False</h1> <br>
+
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+
+<style>
+
+    .modal-content {
+        width: 80%; 
+        max-width: 800px; 
+        padding: 20px;
+    }
+     
+    
+    #answers-container img {
+        max-width: 100%; 
+        height: auto;
+        display: block; 
+        margin-top: 5px;
+    }
+
+    .flex-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        gap: 10px; 
+    }
+    
+    #questions-container input, 
+    #answers-container textarea {
+        width: 100%; 
+    }
+
+    
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px; 
+    }
+
+    .form-group label {
+        white-space: nowrap; 
+        font-size: 16px;
+    }
+
+   #kategori_interaksi {
+        width: 200px; 
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #fff;
+        transition: border-color 0.3s ease-in-out;
+    }
+
+
+
+    #kategori_interaksi:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+
+    table.crud-table td:nth-child(2),
+    table.crud-table th:nth-child(2) {
+        max-width: 200px;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    table.crud-table td:nth-child(6),
+    table.crud-table th:nth-child(6) {
+        min-width: 120px;
+        text-align: center;
+    }
+        
+</style>
+
+<section class="crud-section">
+    <div class="crud-header">
+        <div class="form-group">
+          <label for="kategori_interaksi"><strong><h3>Pilih Kategori Interaksi:</h3></strong></label>
+            <div class="input-group" style="max-width: 250px;">
+                <select id="kategori_interaksi" class="form-control">
+                    <option value="dosen">Interaksi Dosen</option>
+                    <option value="mk">Interaksi Mata Kuliah</option>
+                    <option value="pengampu">Interaksi Pengampu Mata Kuliah</option>
+                    <option value="panduan">Interaksi Panduan Akademik</option>
+                </select>
+                <div class="input-group-append">
+                    <span class="input-group-text" id="dropdown-icon">
+                        <i class="fa fa-chevron-down"></i>
+                    </span>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="crud-action" style="text-align: right; margin-top: 10px;">
+        <button class="btn-add" onclick="openModal()">+ Tambah Interaksi</button>
+    </div>
+
+
+
+    <table class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Intent</th>
+                <th>Questions</th>
+                <th>Answers</th>
+                <th>Kode Kategori</th>
+                <th>Aksi</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><input type="text" class="form-control filter-input" data-column="0" placeholder="Cari Interaksi"></th>
+                <th><input type="text" class="form-control filter-input" data-column="1" placeholder="Cari Pertanyaan"></th>
+                <th><input type="text" class="form-control filter-input" data-column="2" placeholder="Cari Jawaban"></th>
+               <th><input type="text" class="form-control filter-input" data-column="3" placeholder="Cari Kode"></th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="interaksiTableBody">
+           
+        </tbody>
+    </table>
+
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+
+    <div class="modal fade" id="interaksiModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" style="max-width: 1200px; width: 1200px;">
+
+        <div class="modal-content">
+        <form id="intentForm" action="/insert_chat_intent/" method="POST" onsubmit="saveIntent(event)">
+            {% csrf_token %}
+            <input type="hidden" id="edit-id" name="edit-id">
+
+            <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">Tambah Interaksi Berdasarkan Kategori</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+
+            <div class="modal-body">
+            <div class="mb-3">
+                <label for="intent" class="form-label">Pilih Berdasarkan:</label>
+                <select id="intent" name="intent" class="form-select" required>
+                <option value="" disabled selected>Pilih Sumber</option>
+                <option value="Dosen">Dosen</option>
+                <option value="Mata Kuliah">Mata Kuliah</option>
+                <option value="Pengampu Mata Kuliah">Pengampu Mata Kuliah</option>
+                <option value="Panduan Akademik">Panduan Akademik</option>
+                </select>
+            </div>
+
+            <div id="select_dosen_container" class="mb-3" style="display:none;">
+                <label for="nip" class="form-label">Pilih Dosen:</label>
+                <select id="nip" name="nip_" class="form-select" required>
+                <option value="" disabled selected>Memuat data...</option>
+                </select>
+            </div>
+
+            <div id="select_mk_container" class="mb-3" style="display:none;">
+                <label for="kode_mk" class="form-label">Pilih Mata Kuliah:</label>
+                <select id="kode_mk" name="kode_mk_" class="form-select" required>
+                <option value="" disabled selected>Memuat data...</option>
+                </select>
+            </div>
+
+            <div id="select_pengampu_container" class="mb-3" style="display:none;">
+                <label for="id_pengampu" class="form-label">Pilih Pengampu Mata Kuliah:</label>
+                <select id="id_pengampu" name="id_pengampu" class="form-select" required>
+                    <option value="" disabled selected>Pilih Pengampu Mata Kuliah</option>
+                    <option value="all">Semua Pengampu</option>
+                </select>
+            </div>
+
+            <div id="select_panduan_container" class="mb-3" style="display:none;">
+                <label for="id_panduan" class="form-label">Pilih Panduan Akademik:</label>
+                <select id="id_panduan" name="id_panduan_" class="form-select" required>
+                    <option value="" disabled selected>Memuat data...</option>
+                    <option value="all">Semua Panduan</option>
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Questions dan Answers:</label>
+                <div id="questions-container" class="mb-2">
+                <input type="text" name="questions[]" class="form-control" required>
+                </div>
+
+                <div id="answer-container"></div>
+            </div>
+            </div>
+
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+
+        </form>
+        </div>
+    </div>
+    </div>
+
+    
+   
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/pagination1.js' %}"></script> 
+
+<script>
+
+   $(document).ready(function () {
+
+    $('#dropdown-icon').click(function () {
+        $('#kategori_interaksi').focus().click();
+    });
+
+    $('#kategori_interaksi').change(function () {
+        fetchDataInteraksi();
+    });
+
+    fetchDataInteraksi();
+    fetchIdDosen();
+    fetchKodeMK();
+    fetchIdPengampu();
+    fetchIdPanduan();
+
+    $('#intent').change(function () {
+        let sumber = $(this).val();
+        $('#select_dosen_container, #select_mk_container, #select_pengampu_container, #select_panduan_container').hide();
+        
+        // Reset required status
+        $('#nip').prop('required', false);
+        $('#kode_mk').prop('required', false);
+        $('#id_pengampu').prop('required', false);
+        $('#id_panduan').prop('required', false);
+
+        if (sumber === 'Dosen') {
+            $('#select_dosen_container').show();
+            $('#nip').prop('required', true);  
+        } else if (sumber === 'Mata Kuliah') {
+            $('#select_mk_container').show();
+            $('#kode_mk').prop('required', true);   
+        }
+        else if (sumber === 'Pengampu Mata Kuliah') {
+            $('#select_pengampu_container').show();
+            $('#id_pengampu').prop('required', true);   
+        }
+        else if (sumber === 'Panduan Akademik') {
+            $('#select_panduan_container').show();
+            $('#id_panduan').prop('required', true);   
+        }
+
+        $("#questions-container").empty();
+        $("#answer-container").empty();
+    });
+
+    });
+
+    let kategori = 'dosen'; 
+    
+
+    function fetchDataInteraksi() {
+        $.ajax({
+            url: '{% url "data-intent" %}', 
+            type: 'GET',
+            success: function(response) {
+                kategori = $('#kategori_interaksi').val();
+                if (kategori === 'dosen') {
+                    allData = response.data_intent.filter(item => item.nip !== null);
+                } else if (kategori === 'mk') {
+                    allData = response.data_intent.filter(item => item.kode_mk !== null);
+                } 
+                else if (kategori === 'pengampu') {
+                    allData = response.data_intent.filter(item => item.id_pengampu !== null);
+                }
+                else if (kategori === 'panduan') {
+                    allData = response.data_intent.filter(item => item.id_panduan !== null);
+                }
+                
+                else {
+                    allData = response.data_intent; 
+                }
+                renderTable();  
+            },
+            error: function(xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+
+
+    function renderTable() {
+        const tableBody = $('#interaksiTableBody');
+        tableBody.empty();
+
+        const filters = [];
+        $('.filter-input').each(function () {
+            filters.push($(this).val().toLowerCase());
+        });
+
+        const filteredData = allData.filter((intr) => {
+            const intent = (intr.intent || '').toLowerCase();
+            const questions = Array.isArray(intr.questions) ? intr.questions.join(' ').toLowerCase() : (intr.questions || '').toLowerCase();
+            const answers = Array.isArray(intr.answers) ? intr.answers.join(' ').toLowerCase() : (intr.answers || '').toLowerCase();
+
+            let kodeField = '';
+            if (kategori === 'mk') {
+                kodeField = String(intr.kode_mk || '').toLowerCase();
+            } else if (kategori === 'dosen') {
+                kodeField = String(intr.nip || '').toLowerCase();
+            } else if (kategori === 'pengampu') {
+                kodeField = String(intr.id_pengampu || '').toLowerCase();
+            } else if (kategori === 'panduan') {
+                kodeField = String(intr.id_panduan || '').toLowerCase();
+            }
+
+
+            return (!filters[0] || intent.includes(filters[0])) &&
+                (!filters[1] || questions.includes(filters[1])) &&
+                (!filters[2] || answers.includes(filters[2])) &&
+                (!filters[3] || kodeField.includes(filters[3]));
+        });
+
+
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const endIndex = startIndex + dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((intr, index) => {
+                tableBody.append(`
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>${intr.intent}</td>
+                        <td>${intr.questions}</td> 
+                        <td>${intr.answers}</td>
+                        <td>
+                            ${kategori === 'mk' 
+                            ? (intr.kode_mk || '-') 
+                            : kategori === 'dosen' 
+                            ? (intr.nip || '-') 
+                            : kategori === 'panduan' 
+                            ? (intr.id_panduan || '-') 
+                            : kategori === 'pengampu' 
+                            ? (intr.id_pengampu || '-') 
+                            : '-'}
+                        </td>
+
+                        <td>
+                            <button onclick='editData(
+                                ${intr.id},
+                                ${JSON.stringify(intr.intent)},
+                                ${JSON.stringify(intr.questions)},
+                                ${JSON.stringify(intr.answers)},
+                                ${JSON.stringify(intr.nip)},
+                                ${JSON.stringify(intr.kode_mk)},
+                                ${JSON.stringify(intr.id_pengampu)},
+
+                                ${intr.id_panduan}
+                            )' class="btn btn-sm btn-primary mx-1" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData(${intr.id})" class="btn btn-sm btn-danger mx-1" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="6">Tidak ada data.</td></tr>');
+        }
+
+        renderPagination(filteredData.length, renderTable);
+    }
+
+
+    function fetchIdDosen() {
+        $.ajax({
+            url: '{% url "id-dosen" %}', 
+            type: 'GET',
+            success: function(data) {
+                const select = $('#nip');
+                select.empty();
+                select.append('<option value="" disabled selected>Pilih Dosen</option>');
+    
+                if (data && data.length > 0) {
+                    data.forEach(function(item) {
+                        select.append(`<option value="${item.nip}" data-tempat_lahir="${item.tempat_lahir}" data-foto="${item.foto}" data-no_hp="${item.no_hp}">${item.nip} - ${item.nama_dosen}</option>`);
+                    });
+                } else {
+                    select.append('<option value="" disabled>Tidak ada data</option>');
+                }
+            },
+            error: function() {
+                alert('Gagal memuat data id dosen!');
+            }
+        });
+    }
+    
+
+    // MK
+    function fetchKodeMK() {
+        $.ajax({
+            url: '{% url "kode-mk" %}', 
+            type: 'GET',
+            success: function(data) {
+                const select = $('#kode_mk');
+                select.empty();
+                select.append('<option value="" disabled selected>Pilih Kode MK</option>');
+                select.append('<option value="all" style="font-weight:bold;">Semua Mata Kuliah</option>');
+
+                if (data && data.length > 0) {
+                    data.forEach(function(item) {
+                        select.append(`<option value="${item.kode_mk}" data-semester="${item.semester}" data-jenis_mk="${item.jenis_mk}" data-sks="${item.sks}">${item.kode_mk} - ${item.nama_mk}</option>`);
+                    });
+                } else {
+                    select.append('<option value="" disabled>Tidak ada data</option>');
+                }
+            },
+            error: function() {
+                alert('Gagal memuat data kode mk!');
+            }
+        });
+    }
+
+
+    function fetchIdPanduan() {
+        $.ajax({
+            url: '{% url "id-panduan" %}', 
+            type: 'GET',
+            success: function(data) {
+                const select = $('#id_panduan');
+                select.empty();
+
+                select.append('<option value="" disabled selected>Pilih Panduan</option>');
+                select.append('<option value="all" style="font-weight:bold;">Semua Panduan</option>');
+
+                if (data && data.length > 0) {
+                    data.forEach(function(item) {
+                        select.append(`
+                            <option value="${item.id_panduan}" 
+                                    data-deskripsi="${item.deskripsi || ''}" 
+                                    data-file_panduan="${item.file_panduan || ''}">
+                                ${item.id_panduan} - ${item.nama_panduan}
+                            </option>`);
+                    });
+                } else {
+                    select.append('<option value="" disabled>Tidak ada data</option>');
+                }
+            },
+            error: function() {
+                alert('Gagal memuat data id panduan!');
+            }
+        });
+    }
+
+
+   function fetchIdPengampu() {
+        $.ajax({
+            url: '{% url "id-pengampu" %}', 
+            type: 'GET',
+            success: function(data) {
+                const select = $('#id_pengampu');
+                select.empty();
+                select.append('<option value="" disabled selected>Pilih Pengampu Mata Kuliah</option>');
+                select.append('<option value="all" style="font-weight:bold;">Semua Pengampu</option>'); 
+
+                if (data && data.length > 0) {
+                    data.forEach(function(item) {
+                        select.append(`<option value="${item.id_pengampu}" data-nama_dosen="${item.nama_dosen}" data-nama_mk="${item.nama_mk}" data-kelas="${item.kelas}">
+                            ${item.id_pengampu} - ${item.nama_dosen} - ${item.nama_mk} - ${item.kelas}
+                        </option>`);
+                    });
+                } else {
+                    select.append('<option value="" disabled>Tidak ada data</option>');
+                }
+            },
+            error: function() {
+                alert('Gagal memuat data pengampu!');
+            }
+        });
+    }
+
+
+
+    $(document).on("change", "#nip", function () {
+        let selectedOption = $(this).find(":selected");
+        let namaDosen = selectedOption.text().split(" - ")[1]; 
+        let tempat_lahir = selectedOption.data("tempat_lahir");
+        let foto = selectedOption.data("foto");
+        let nip = selectedOption.val();
+        let nohp = selectedOption.data("no_hp");
+
+        let questionContainer = $("#questions-container");
+        let answerContainer = $("#answer-container");
+
+        questionContainer.empty();
+        answerContainer.empty(); 
+
+        questionContainer.append(`<input type="text" name="questions[]" value="Berapa NIP dosen ${namaDosen}?" required>`);
+        answerContainer.append(`<textarea name="answers[]" rows="6" required>NIP Dosen ${namaDosen} adalah ${nip}</textarea>`);
+
+        questionContainer.append(`<input type="text" name="questions[]" value="Nama lengkap / gelar Dosen ${namaDosen} siapa?" required>`);
+        answerContainer.append(`<textarea name="answers[]" rows="6" required>Nama lengkap Dosen tersebut adalah ${namaDosen}</textarea>`);
+
+        questionContainer.append(`<input type="text" name="questions[]" value="Nomor HP Dosen ${namaDosen} berapa?" required>`);
+        answerContainer.append(`<textarea name="answers[]" rows="6" required>Nomor HP Dosen ${namaDosen} adalah ${nohp || 'belum tersedia'}</textarea>`);
+
+        questionContainer.append(`<input type="text" name="questions[]" value="Tempat Lahir Dosen ${namaDosen} dimana?" required>`);
+        answerContainer.append(`<textarea name="answers[]" rows="6" required>Tempat Lahir Dosen ${namaDosen} di ${tempat_lahir || 'belum tersedia'}.</textarea>`);
+
+        questionContainer.append(`<input type="text" name="questions[]" value="Foto Dosen ${namaDosen} yang mana?" required>`);
+        if (foto) {
+            let namaFile = foto.split('/').pop();
+            answerContainer.append(`
+                <textarea name="answers[]" rows="6" required>Berikut foto Dosen ${namaDosen}: ${namaFile}</textarea>
+        <img src="/media/${foto}" alt="Foto Dosen ${namaDosen}" style="max-width:100px; display:block; margin-top:10px;">
+            `);
+        } else {
+            answerContainer.append(`<textarea name="answers[]" rows="2" required>Foto belum tersedia.</textarea>`);
+        }
+
+    });
+
+
+
+    $(document).on("change", "#kode_mk", function () {
+        let selectedOption = $(this).find(":selected");
+        let kodeMK = selectedOption.val();
+
+        $("#questions-container").empty();
+        $("#answer-container").empty();
+
+        if (kodeMK === "all") {
+            $("#questions-container").append(`<div class="text-muted">Semua mata kuliah akan ditambahkan secara otomatis.</div>`);
+            return;
+        }
+
+        let namaMK = selectedOption.text().split(" - ")[1]; 
+        let semester = selectedOption.data("semester");
+        let jenis_mk = selectedOption.data("jenis_mk");
+        let sks = selectedOption.data("sks");
+
+        $("#questions-container").append(`<input type="text" name="questions[]" value="Mata kuliah ${namaMK} berapa kode mk-nya?" required>`);
+        $("#answer-container").append(`<textarea name="answers[]" rows="6" required>Kode mata kuliah ${namaMK} adalah ${kodeMK || 'belum tersedia'}.</textarea>`);
+
+        $("#questions-container").append(`<input type="text" name="questions[]" value="Mata kuliah ${namaMK} bisa diambil di semester berapa?" required>`);
+        $("#answer-container").append(`<textarea name="answers[]" rows="6" required>Mata kuliah ${namaMK} bisa diambil di semester ${semester || 'belum tersedia'}.</textarea>`);
+
+        $("#questions-container").append(`<input type="text" name="questions[]" value="Mata kuliah ${namaMK} itu termasuk kategori / peminatan apa?" required>`);
+        $("#answer-container").append(`<textarea name="answers[]" rows="6" required>Mata kuliah ${namaMK} termasuk kategori ${jenis_mk || 'belum tersedia'}.</textarea>`);
+
+        $("#questions-container").append(`<input type="text" name="questions[]" value="Mata kuliah ${namaMK} berapa sks?" required>`);
+        $("#answer-container").append(`<textarea name="answers[]" rows="6" required>${sks ? `Mata kuliah ${namaMK} memiliki ${sks} SKS.` : 'Informasi SKS tidak tersedia.'}</textarea>`);
+    });
+
+
+
+    $(document).on("change", "#id_pengampu", function () {
+        let selectedOption = $(this).find(":selected");
+        let idPengampu = selectedOption.val();
+
+        $("#questions-container").empty();
+        $("#answer-container").empty();
+
+        if (idPengampu === "all") {
+            $("#questions-container").append(`<div class="text-muted">Semua pengampu akan ditambahkan secara otomatis.</div>`);
+            return;
+        }
+
+        if (!idPengampu) return;
+
+        let namaDosen = selectedOption.data("nama_dosen");
+        let namaMK = selectedOption.data("nama_mk");
+        let kelas = selectedOption.data("kelas");
+
+        $("#questions-container").append(`<input type="text" name="questions[]" value="Mata kuliah ${namaMK} Kelas ${kelas} siapa dosen pengampunya?" required>`);
+        $("#answer-container").append(`<textarea name="answers[]" rows="6" required>Dosen pengampu mata kuliah ${namaMK} kelas ${kelas} adalah ${namaDosen}.</textarea>`);
+    });
+
+
+        
+
+   $(document).on("change", "#id_panduan", function () {
+        let selectedOption = $(this).find(":selected");
+        let idPanduan = selectedOption.val();
+
+        $("#questions-container").empty();
+        $("#answer-container").empty();
+
+        if (idPanduan === "all") {
+            $("#questions-container").append(`<div class="text-muted">Semua panduan akan ditambahkan secara otomatis.</div>`);
+            return;
+        }
+
+        let namaPanduan = selectedOption.text().split(" - ")[1]; 
+        let deskripsi = selectedOption.data("deskripsi"); 
+        let file_panduan = selectedOption.data("file_panduan"); 
+
+        $("#questions-container").append(`<input type="text" name="questions[]" value="File ${namaPanduan} yang mana?" required>`);
+
+        if (file_panduan) {
+            let namaFile = file_panduan.split('/').pop();
+            $("#answer-container").append(`
+                <textarea name="answers[]" rows="2" required>Berikut file ${namaPanduan}: ${namaFile}</textarea>
+                <a href="/media/${file_panduan}" target="_blank" style="display:block; margin-top:10px; color:blue;">
+                    Lihat / Unduh file: ${namaFile}
+                </a>
+            `);
+        } else {
+            $("#answer-container").append(`
+                <textarea name="answers[]" rows="2" required>File ${namaPanduan} belum tersedia.</textarea>
+            `);
+        }
+    });
+
+    
+
+    function saveIntent(event) {
+        event.preventDefault();
+
+        let questions = [];
+        $("input[name='questions[]']").each(function() {
+            questions.push($(this).val().trim());
+        });
+
+        let answers = [];
+        $("textarea[name='answers[]']").each(function() {
+            answers.push($(this).val().trim());
+        });
+
+        const idEdit = $('#intentForm').data('edit-id'); 
+
+
+        const formData = {
+            intent: $('#intent').val().trim(),
+            nip: $('#nip').val(),
+            kode_mk: $('#kode_mk').val(), 
+            id_panduan: $('#id_panduan').val(),
+            id_pengampu: $('#id_pengampu').val(),
+
+            
+            // kode_mk: $('#kode_mk').val() || null, 
+            questions: questions,
+            answers: answers
+        };
+        console.log("FormData", formData);
+
+
+        let url = '/insert-chat-intent/';
+        let method = 'POST';
+
+        if (idEdit) {
+            url = `/edit-chat-intent/${idEdit}/`;
+            method = 'PUT';
+        }
+
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: "application/json",
+            data: JSON.stringify(formData),
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            success: function(response) {
+                alert(idEdit ? 'Intent berhasil diupdate!' : 'Intent berhasil disimpan!');
+                $('#intentForm').removeData('edit-id'); 
+                $('#interaksiModal').hide();
+                location.reload();
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseText);
+            }
+        });
+    }
+
+
+
+    function editData(id, intent, questions, answers, nip, kode_mk, id_pengampu, id_panduan) {
+
+        console.log("editData() called with id_pengampu:", id_pengampu);
+
+        $('#modalTitle').text('Edit Pertanyaan Dosen');
+        $('#intent').val(intent).prop('disabled', true);
+
+        $('#select_dosen_container, #select_mk_container, #select_pengampu_container, #select_panduan_container').hide();
+
+        if (intent === 'Dosen') {
+            $('#select_dosen_container').show();
+            $('#nip').val(nip).prop('disabled', true);
+        } else {
+            $('#nip').val('').prop('disabled', false);
+        }
+
+        if (intent === 'Mata Kuliah') {
+            $('#select_mk_container').show();
+            $('#kode_mk').val(kode_mk).prop('disabled', true);
+        } else {
+            $('#kode_mk').val('').prop('disabled', false);
+        }
+
+        if (intent === 'Panduan Akademik') {
+            $('#select_panduan_container').show();
+            $('#id_panduan').val(id_panduan).prop('readonly', true);
+        } else {
+            $('#id_panduan').val('').prop('disabled', false);
+        }
+
+        if (intent === 'Pengampu Mata Kuliah') {  
+            $('#select_pengampu_container').show();
+            $('#id_pengampu').val(id_pengampu).prop('readonly', true);
+        } else {
+            $('#id_pengampu').val('').prop('disabled', false);
+        }
+
+        $('#nip').val(nip).trigger('change').prop('disabled', true);
+        $('#kode_mk').val(kode_mk).trigger('change').prop('disabled', true);
+        $('#id_panduan').val(id_panduan).trigger('change').prop('disabled', true);
+        $('#id_pengampu').val(id_pengampu).trigger('change').prop('disabled', true);
+        
+
+        let questionsArr = [];
+        let answersArr = [];
+
+        try {
+            const parsed = JSON.parse(questions);
+            questionsArr = Array.isArray(parsed) ? parsed : [parsed];
+        } catch {
+            questionsArr = typeof questions === 'string' ? [questions] : [];
+        }
+
+        try {
+            const parsed = JSON.parse(answers);
+            answersArr = Array.isArray(parsed) ? parsed : [parsed];
+        } catch {
+            answersArr = typeof answers === 'string' ? [answers] : [];
+        }
+
+        $('#questions-container').empty();
+        $('#answer-container').empty();
+
+        for (let i = 0; i < Math.max(questionsArr.length, answersArr.length); i++) {
+            $('#questions-container').append(
+                `<input type="text" name="questions[]" value="${questionsArr[i] || ''}" required class="form-control mb-2">`
+            );
+            $('#answer-container').append(
+                `<textarea name="answers[]" rows="2" required class="form-control mb-2">${answersArr[i] || ''}</textarea>`
+            );
+        }
+
+        $('#intentForm').data('edit-id', id);
+        $('#interaksiModal').modal('show');
+    }
+
+
+
+    let interaksiModal;
+
+        document.addEventListener('DOMContentLoaded', () => {
+        const modalElement = document.getElementById('interaksiModal');
+        interaksiModal = new bootstrap.Modal(modalElement);
+    });
+
+    function openModal() {
+        console.log('Open Add Modal called');
+        $('#intentForm')[0].reset();
+        $('#questions-container').empty();
+        $('#answer-container').empty();
+        $('#modalTitle').text('Tambah Interaksi Berdasarkan Kategori');
+        $('#intentForm').removeData('edit-id');
+        
+        interaksiModal.show();
+        }
+
+    function closeModal() {
+        interaksiModal.hide();
+    }
+
+
+
+
+    function deleteData(intentId) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            const formData = { id: intentId }; 
+            
+            $.ajax({
+                url: '/delete-chat-intent/', 
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    alert(response.message); 
+                    fetchDataInteraksi(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText); 
+                }
+            });
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+   
+</script>    
+    
+    
+{% endblock %}
+

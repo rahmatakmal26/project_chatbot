@@ -1,0 +1,387 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block header %}
+<h1>Selamat Datang di Dashboard Chatbot!</h1>
+<p>Monitor dan kelola interaksi chatbot Anda di sini.</p>
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+
+<div class="stat-card crud-header">
+    <h2>Dashboard</h2>
+    <p>{{ total_interactions }}</p>
+</div>
+
+<style>
+    .chart-container {
+        width: 100%;
+        max-width: 900px;
+        height: 450px;
+        margin: 20px auto;
+    }
+
+    .menu-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 220px;
+    }
+
+    .btn-menu {
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-menu i {
+        font-size: 18px;
+    }
+
+    .btn-menu:hover {
+        background: linear-gradient(135deg, #a777e3, #6e8efb);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Dropdown2 Container */
+    .dropdown2 {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Dropdown2 Content */
+    .dropdown2-content {
+        display: none;
+        position: absolute;
+        background: white;
+        min-width: 180px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+        z-index: 1;
+    }
+
+    /* Style Links Inside Dropdown2 */
+    .dropdown2-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-size: 14px;
+    }
+
+    /* Hover Effects */
+    .dropdown2-content a:hover {
+        background: #f1f1f1;
+    }
+
+    /* Show Dropdown2 on Hover */
+    .dropdown2:hover .dropdown2-content {
+        display: block;
+    }
+
+    /* Button Styling */
+    .dropdown2-toggle {
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+
+    .charts-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 20px;
+        max-width: 1000px;
+        margin: 20px auto;
+    }
+
+    .chart-container {
+        width: 100%;
+        max-width: 450px; 
+        height: 350px;
+        background: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #topQuestionsList {
+        display: none;
+    }
+
+
+    @media print {
+        #topQuestionsList {
+            display: block !important;
+        }
+    }
+
+
+</style>
+
+
+<div style="display: flex; justify-content: flex-end; margin-top: 20px; max-width: 900px; margin-left: auto; margin-right: auto;">
+    <button onclick="printCharts()" class="btn-menu">
+        <i class="fas fa-print"></i> Cetak Grafik
+    </button>
+</div>
+
+
+<div class="charts-wrapper">
+    <div class="chart-container">
+        <canvas id="interactionChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="topQuestionsChart"></canvas>
+        <div id="topQuestionsList" class="mt-3" style="font-size: 14px;"></div>
+
+    </div>
+</div>
+
+
+<div class="menu-buttons">
+    <button onclick="location.href='../dashboard_admin'" class="btn-menu">
+        <i class="fas fa-chart-line"></i> Dashboard
+    </button>
+
+
+    <div class="dropdown2">
+        <button class="btn-menu dropdown2-toggle">
+            <i class="fas fa-comments"></i> Interaksi
+        </button>
+        <div class="dropdown2-content">
+            <a href="{% url 'intents' %}">Interaksi Umum</a>
+            <a href="{% url 'kategori_interaksi' %}">Kategori Interaksi</a>
+            <a href="{% url 'history' %}">Log Interaksi</a>
+            <a href="{% url 'answer_false' %}">Answers False</a>
+        </div>
+    </div>
+
+    <div class="dropdown2">
+        <button class="btn-menu dropdown2-toggle">
+            <i class="fas fa-database"></i> Data
+        </button>
+        <div class="dropdown2-content">
+            <a href="{% url 'matakuliah' %}">Data Mata Kuliah</a>
+            <a href="{% url 'dosen' %}">Data Dosen</a>
+            <a href="{% url 'panduan' %}">Data Panduan Akademik</a>
+            <a href="{% url 'berita_admin' %}">Data Berita</a>
+        </div>
+    </div>
+
+    <button onclick="location.href='../user'" class="btn-menu">
+        <i class="fas fa-user"></i> User
+    </button>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+
+    function printCharts() {
+        const printWindow = window.open('', '_blank');
+        const style = `
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                }
+                .print-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: flex-start;
+                    gap: 40px;
+                    flex-wrap: wrap;
+                }
+                .print-container img {
+                    max-width: 45%;
+                    height: auto;
+                }
+                .top-questions-list {
+                    margin-top: 20px;
+                    font-size: 14px;
+                    max-width: 100%;
+                }
+            </style>
+        `;
+
+        const chart1 = document.getElementById('interactionChart').toDataURL();
+        const chart2 = document.getElementById('topQuestionsChart').toDataURL();
+        const topQuestionsListHTML = document.getElementById('topQuestionsList').innerHTML;
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Cetak Grafik Interaksi</title>
+                ${style}
+            </head>
+            <body>
+                <h2>Grafik Interaksi Chatbot & Pertanyaan Terpopuler</h2>
+                <div class="print-container">
+                    <img src="${chart1}" alt="Grafik Interaksi">
+                    <img src="${chart2}" alt="Grafik Pertanyaan">
+                </div>
+                <div class="top-questions-list">
+                    ${topQuestionsListHTML}
+                </div>
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        setTimeout(() => window.close(), 500);
+                    }
+                <\/script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
+
+
+
+    var ctx = document.getElementById('interactionChart').getContext('2d');
+    var interactionChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],  
+            datasets: [{
+                label: 'Interaksi Chatbot',
+                data: [],  
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    function fetchChartData() {
+        $.ajax({
+            url: '/api/interaction-data/',  
+            type: 'GET',
+            success: function(data) {
+                interactionChart.data.labels = data.total_interactions.labels;
+                interactionChart.data.datasets[0].data = data.total_interactions.data;
+                interactionChart.update();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching chart data:', error);
+            }
+        });
+    }
+
+    fetchChartData();
+
+
+    var ctx2 = document.getElementById('topQuestionsChart').getContext('2d');
+    var topQuestionsChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Top Pertanyaan',
+                data: [],
+                backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 30,
+                        font: {
+                            size: 10
+                        },
+                        callback: function(value) {
+                            return value.length > 25 ? value.substr(0, 25) + '…' : value;
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+
+    function fetchTopQuestions() {
+        $.ajax({
+            url: '/api/top-questions/',
+            type: 'GET',
+            success: function(data) {
+                
+                topQuestionsChart.data.labels = data.top_questions.labels;
+                topQuestionsChart.data.datasets[0].data = data.top_questions.data;
+                topQuestionsChart.update();
+
+                const listContainer = document.getElementById('topQuestionsList');
+                let listHTML = '<strong>Daftar Pertanyaan Terpopuler:</strong>';
+                listHTML += '<ol>';
+                data.top_questions.labels.forEach((label, index) => {
+                    listHTML += `<li>${label}</li>`;
+                });
+                listHTML += '</ol>';
+                listContainer.innerHTML = listHTML;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching top questions data:', error);
+            }
+        });
+    }
+
+
+    fetchTopQuestions();
+
+</script>
+
+
+
+{% endblock %}

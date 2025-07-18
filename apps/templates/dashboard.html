@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Konsultasi Program Studi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+html, body {
+    height: 100%;
+}
+
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("{% static 'photo_6253353322643835209_y.jpg' %}") no-repeat center center/cover;
+            filter: blur(4px);
+            z-index: 0;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 12, 12, 0.5);
+            z-index: 1;
+        }
+
+        .text-container {
+            position: relative;
+            z-index: 2;
+            width: 120%;
+            color: white;
+            padding: 20px;
+        }
+
+        .text-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .text-container p {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+        }
+
+        
+
+       .transparent-box {
+            background-color: rgba(0, 0, 0, 0.6); 
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            border: 4px solid  #02424a; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7); 
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+        }
+
+
+        .consult-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #04d9ff, #057a8d);
+            color: white;
+            padding: 18px 25px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .consult-button:hover {
+            background: linear-gradient(135deg, #0393b5, #033649);
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-text {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 0.9rem;
+            color: #ccc;
+            opacity: 0.8;
+        }
+
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="content">
+        <div class="overlay"></div>
+        <div class="text-container">
+            <div class="transparent-box">
+            <h1>Selamat Datang di Chatbot Konsultasi Akademik<br>Program Studi Teknologi Informasi <br> <br></h1>
+                <p class="typing-text" id="typing-text"></p>
+                <a href="{% url 'layanan' %}" class="consult-button">Tanyakan Sekarang!</a>
+            </div>
+          <p class="footer-text">© 2025 Program Studi Teknologi Informasi - Universitas Teuku Umar</p>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const typingElement = document.getElementById("typing-text");
+            
+    
+            fetch("/get-email/")
+                .then(response => response.json())
+                .then(data => {
+                    let username = data.username ? data.username : "Guest";
+                    const rawText = `Halo! ${username}, Punya pertanyaan seputar Program Studi Teknologi Informasi?\n\nKlik tombol di bawah ini untuk ngobrol langsung dengan chatbot kami.`;
+                    const text = rawText.replace(/\n/g, "<br>");
+
+                    let index = 0;
+                    const speed = 40;
+    
+                    function typeEffect() {
+                        if (index < text.length) {
+                            if (text.substr(index, 4) === "<br>") {
+                                typingElement.innerHTML += "<br>";
+                                index += 4; 
+                            } else {
+                                typingElement.innerHTML += text.charAt(index);
+                                index++;
+                            }
+                            setTimeout(typeEffect, speed);
+                        }
+                    }
+
+    
+                    setTimeout(typeEffect, 500);
+                })
+                .catch(error => {
+                    console.error("Error fetching user info:", error);
+                    typingElement.textContent = "Terjadi kesalahan dalam mengambil data.";
+                });
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #101010;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            top: 0;
+            left: 0;
+        }
+
+        .login-container {
+            width: 90%; 
+            max-width: 800px; 
+            height: auto;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, #040613 48%, #00b7c2 110%);
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1; 
+            margin: 5% auto; 
+            margin-top: 180px;
+            padding: 30px; 
+        }
+
+        .form-side {
+            width: 60%;
+        }
+
+        .side-panel {
+            width: 40%;
+            color: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            text-align: center;
+        }
+
+
+        .side-panel img {
+            width: 100px;
+            margin-top: 20px;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+        }
+
+        .side-panel h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .side-panel p {
+            font-size: 14px;
+        
+        }
+
+        @media (max-width: 600px) {
+            .login-container {
+                width: 95%;
+                margin: 10% auto; 
+                transform: none; 
+            }
+        }        
+
+        .register-form {
+            padding: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .register-form h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            text-align: center; 
+        }
+
+        .register-form label {
+            color: #fff;
+            margin-bottom: 1px;
+            font-size: 12px;
+        }
+        
+
+        .register-form input {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-bottom: 2px solid #0dcaf0;
+            padding: 5px; 
+            margin-bottom: 10px; 
+            height: 28px; 
+            width: 100%;
+            outline: none;
+            font-size: 12px; 
+        }
+
+        .register-form button {
+            background-color: #0dcaf0;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            width: 101%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .register-form button:hover {
+            background-color: #0aa9d8;
+        }
+
+        .login-link {
+            margin-top: 20px;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .login-link a {
+            color: #0dcaf0;
+            text-decoration: none;
+        }
+        .register-form .regis {
+            margin-top: 20px;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .register-form .regis a {
+            color: #0dcaf0;
+            text-decoration: none;
+        }
+
+        .container-input {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .input-regis {
+            width: 97%; 
+        }
+        
+        .input-regis label {
+            margin-bottom: 5px; 
+        }
+        
+        .input-regis input {
+            height: 28px; 
+            padding: 5px; 
+            margin-bottom: 10px; 
+        }
+
+        .messages {
+    margin-bottom: 15px;
+    list-style: none;
+    padding: 0;
+}
+.messages li.success {
+    color: green;
+    font-weight: bold;
+}
+.messages li.error {
+    color: red;
+    font-weight: bold;
+}
+
+        
+    </style>
+</head>
+<body>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+<div id="particles-js"></div>
+<div class="login-container">
+    <div class="form-side">
+    <div class="register-form">
+        <h2>Register</h2>
+        <form method="POST" action="{% url 'register_data' %}">
+        {% csrf_token %}
+
+        <div class="container-input">
+            <div class="input-regis">
+                <label for="nama_lengkap">Full Name</label>
+                <input type="text" id="nama_lengkap" name="nama_lengkap" required>
+            </div>
+
+        </div> 
+        
+        <div class="container-input">
+            <div class="input-regis">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+        </div> 
+
+        <div class="container-input">
+            <div class="input-regis">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+        </div> 
+        <div class="container-input">
+            <div class="input-regis">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+        </div> 
+        <div id="password-error" style="color: red; margin-bottom: 10px;"></div>
+
+        <div class="container-input">
+            <div class="input-regis">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+        </div> 
+
+            <button type="submit">Register</button>
+        </form>
+        <div class="regis">
+            Already have an account? <a href="{% url 'login' %}">Sign In</a>
+        </div>
+    </div>
+    </div>
+    <div class="side-panel">
+        <h3>Welcome!</h3>
+          <p id="typing-text"></p>
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Register" />
+    </div>
+    
+</div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<script>
+    const text = "Register and start right away.";
+    const typingElement = document.getElementById("typing-text");
+    let index = 0;
+
+    function typeEffect() {
+        if (index < text.length) {
+            typingElement.innerHTML += text.charAt(index);
+            index++;
+            setTimeout(typeEffect, 50); 
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", typeEffect);
+
+
+
+
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm_password').value;
+    const errorDiv = document.getElementById('password-error');
+
+    errorDiv.textContent = '';
+
+    if (password !== confirm) {
+        e.preventDefault(); 
+        errorDiv.textContent = 'Password dan konfirmasi password tidak cocok.';
+    }
+});
+
+
+</script>
+
+
+<script>
+    particlesJS('particles-js', {
+        "particles": {
+            "number": {
+                "value": 80,
+                "density": {
+                    "enable": true,
+                    "value_area": 800
+                }
+            },
+            "color": {
+                "value": "#33b5e5"
+            },
+            "shape": {
+                "type": "circle",
+                "stroke": {
+                    "width": 0,
+                    "color": "#000000"
+                },
+                "polygon": {
+                    "nb_sides": 5
+                },
+            },
+            "opacity": {
+                "value": 0.5,
+                "random": false,
+                "anim": {
+                    "enable": false,
+                    "speed": 1,
+                    "opacity_min": 0.1,
+                    "sync": false
+                }
+            },
+            "size": {
+                "value": 3,
+                "random": true,
+                "anim": {
+                    "enable": false,
+                    "speed": 40,
+                    "size_min": 0.1,
+                    "sync": false
+                }
+            },
+            "line_linked": {
+                "enable": true,
+                "distance": 150,
+                "color": "#33b5e5",
+                "opacity": 0.4,
+                "width": 1
+            },
+            "move": {
+                "enable": true,
+                "speed": 6,
+                "direction": "none",
+                "random": false,
+                "straight": false,
+                "out_mode": "out",
+                "bounce": false,
+                "attract": {
+                    "enable": false,
+                    "rotateX": 600,
+                    "rotateY": 1200
+                }
+            }
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+                "onhover": {
+                    "enable": true,
+                    "mode": "grab"
+                },
+                "onclick": {
+                    "enable": true,
+                    "mode": "push"
+                },
+                "resize": true
+            },
+            "modes": {
+                "grab": {
+                    "distance": 140,
+                    "line_linked": {
+                        "opacity": 1
+                    }
+                },
+                "bubble": {
+                    "distance": 400,
+                    "size": 40,
+                    "duration": 2,
+                    "opacity": 8,
+                    "speed": 3
+                },
+                "repulse": {
+                    "distance": 200,
+                    "duration": 0.4
+                },
+                "push": {
+                    "particles_nb": 4
+                },
+                "remove": {
+                    "particles_nb": 2
+                }
+            }
+        },
+        "retina_detect": true
+    });
+</script>
+
+</body>
+</html>

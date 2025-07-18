@@ -1,0 +1,249 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Manage Chatbot Answers{% endblock %}
+
+{% block header %}
+<h1>Kelola Jawaban Chatbot False</h1>
+
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+
+.pagination-container {
+    margin-top: 20px;
+    text-align: left; 
+    display: flex;
+    justify-content: flex-start; 
+    gap: 10px;
+}
+
+
+.btn-pagination {
+    background-color: #4952d9;
+    color: white;
+    padding: 12px 25px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-pagination:hover {
+    background-color: #45a049;
+    transform: scale(1.1);
+}
+
+.btn-pagination.active {
+    background-color: #a69d32;
+    font-weight: bold;
+}
+
+.btn-pagination:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+
+
+/* Container untuk dropdown per halaman */
+.per-page-container {
+    margin-top: 20px;
+    text-align: left;  /* Ubah alignment ke kiri */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Label untuk dropdown */
+.per-page-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #f1e342;
+}
+
+/* Styling untuk dropdown */
+#perPage {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #a4b80b;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s ease;
+}
+
+/* Efek hover dan fokus pada dropdown */
+#perPage:hover, #perPage:focus {
+    background-color: #f1f1f1;
+    border-color: #ddd33e;
+    outline: none;
+}
+
+/* Animasi untuk dropdown */
+#perPage option {
+    padding: 10px;
+    font-size: 16px;
+}
+
+
+</style>
+
+<section class="crud-section">
+
+    <div class="crud-header">
+        <h2>ANSWERS FALSE</h2>
+    </div>
+
+    <table class="crud-table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>User Input</th>
+                <th>Bot Response</th>
+                <th>Created At</th>
+                <th>User ID</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="answerTableBody">
+            <!-- Data akan diisi melalui AJAX -->
+        </tbody>
+    </table>
+       
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+
+   
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/pagination1.js' %}"></script> 
+
+
+<script>
+
+    $(document).ready(function () {
+        fetchAnswerFalse();
+
+    });
+
+    function fetchAnswerFalse() {
+        $.ajax({
+            url: '{% url "chat-history" %}',
+            type: 'GET',
+            data: { all: true },
+            success: function(response) {
+                allData = response.chatbot_histori;
+                renderTable();
+            },
+            error: function(xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function getFilteredData() {
+        const filters = $(".filter-input").map(function () {
+            return $(this).val().toLowerCase();
+        }).get();
+
+        return allData.filter(item =>
+            item.message.includes("Maaf, saya belum memiliki jawaban yang tepat untuk pertanyaan Anda") && // Falseeee
+            (!filters[0] || item.user_input.toLowerCase().includes(filters[0])) &&
+            (!filters[1] || item.message.toLowerCase().includes(filters[1])) &&
+            (!filters[2] || item.user.toString().includes(filters[2]))
+        );
+    }
+
+
+    function renderTable() {
+        const filteredData = getFilteredData();
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, startIndex + dataPerPage);
+
+        const answerTableBody = $('#answerTableBody');
+        answerTableBody.empty();
+
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((chat, index) => {
+                answerTableBody.append(`
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>${chat.user_input}</td>
+                        <td>${chat.message}</td>
+                        <td>${chat.user}</td>
+                        <td>${chat.created_at}</td>
+                        <td>
+                        <button onclick="deleteChat(${chat.chat_id})" class="btn btn-sm btn-danger mx-1" title="Delete">
+                            <i class="fa fa-trash"></i>
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            answerTableBody.append('<tr><td colspan="6">Tidak ada data.</td></tr>');
+        }
+
+       renderPagination(filteredData.length, renderTable);
+    }
+
+
+    function deleteChat(chat_id) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            $.ajax({
+                url: `/delete-chat/${chat_id}/`,  
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') 
+                },
+                success: function(response) {
+                    alert(response.message); 
+                    fetchAnswerFalse(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+    
+
+
+{% endblock %}
+    

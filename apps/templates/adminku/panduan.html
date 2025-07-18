@@ -1,0 +1,317 @@
+{% extends 'adminku/base.html' %}
+
+
+{% block title %}Manage Chatbot Panduan Akademik{% endblock %}
+
+{% block header %}
+<h1>Kelola Panduan Akademik</h1>
+
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+<section class="crud-section">
+    <div class="crud-header">
+        <h2><u>Daftar Panduan Akademik</u></h2>
+    </div>
+    <div class="crud-action" style="text-align: right; margin-top: 10px;">
+        <button class="btn-add" onclick="openModal()">+ Tambah Panduan Akademik</button>
+    </div>
+
+
+    <div class="modal fade" id="panduanModal" tabindex="-1" aria-labelledby="panduanModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <form id="panduanForm" onsubmit="savePanduan(event)" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="id" name="id" value="">
+
+            <div class="modal-header">
+            <h5 class="modal-title" id="panduanModalLabel">Tambah Panduan Akademik</h5>
+           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+
+            <div class="modal-body">
+            <label for="nama" class="form-label">Nama File:</label>
+            <input type="text" class="form-control" id="nama" name="nama" required>
+
+            <label for="file_panduan" class="form-label mt-3">File:</label>
+            <input type="file" class="form-control" id="file_panduan" name="file_panduan" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+            <div id="current_file" class="mt-2"></div>
+            </div>
+
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closePanduanModal()">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
+
+    <table class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Panduan</th>
+                <th>File</th>
+                <th>Created Time</th>
+                <th>Updated Time</th>
+                <th>Aksi</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><input type="text" class="form-control filter-input" data-column="0" placeholder="Cari Panduan"></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+
+        </thead>
+        <tbody id="filePanduanTableBody">
+
+        </tbody>
+    </table>
+
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+    
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/pagination1.js' %}"></script> 
+
+
+<script>
+
+    $(document).ready(function() {
+        fetchDataPanduan();
+
+    });
+
+    function fetchDataPanduan() {
+        $.ajax({
+            url: '{% url "file-panduan" %}', 
+            type: 'GET',
+            success: function(response) {
+                allData = response.data_filepanduan;
+                renderTable();
+            },
+            error: function(xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+      
+            
+    function renderTable() {
+        const tableBody = $('#filePanduanTableBody');
+        tableBody.empty();
+    
+        const filterNama = $('.filter-input[data-column="0"]').val().toLowerCase();
+ 
+        const filteredData = allData.filter(item => {
+            const nama = item.nama.toLowerCase().trim();        
+            const filterNamaTrim = filterNama.trim();
+        
+            return nama.includes(filterNamaTrim);
+        });
+        
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const endIndex = startIndex + dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+
+        function formatToWIB(datetimeString) {
+            const date = new Date(datetimeString);
+            return date.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+        }
+        
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((panduan, index) => {
+                tableBody.append(`
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>${panduan.nama}</td>
+                        <td>
+                            <a href="/media/${panduan.file_panduan}" target="_blank" title="Lihat PDF">
+                                ${panduan.file_panduan}
+                            </a>
+                        </td>
+                        <td>${formatToWIB(panduan.created_time)}</td>
+                        <td>${formatToWIB(panduan.updated_time)}</td>
+                        <td>
+                            <button onclick="editData(${panduan.id}, '${panduan.nama}', '${panduan.file_panduan}')" 
+                                    class="btn btn-sm btn-primary mx-1" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData(${panduan.id})" 
+                                    class="btn btn-sm btn-danger mx-1" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="7">Tidak ada data ditemukan.</td></tr>');
+        }
+    
+        renderPagination(filteredData.length, renderTable);
+    }
+    
+
+    // CREATE
+
+    function savePanduan(event) {
+        event.preventDefault();
+    
+        const formData = new FormData(document.getElementById('panduanForm'));
+        const id = $('#id').val();
+        const url = id ? `/edit-panduan/${id}/` : '{% url "create-file-panduan" %}';
+        const type = 'POST'; 
+    
+        if (id) {
+            formData.append('_method', 'PUT');
+        }
+    
+        const fileInput = $('#file_panduan')[0];
+            if (id && !fileInput.files.length) {
+                formData.delete('file_panduan'); 
+            }
+    
+        $.ajax({
+            url: url,
+            type: type,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function(response) {
+                alert('Data berhasil disimpan!');
+                fetchDataPanduan();
+                closeModal();
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseText);
+            }
+        });
+    }
+    
+    function editData(id, nama, file_panduan) {
+        document.getElementById('id').value = id;
+        document.getElementById('nama').value = nama;
+
+        if (file_panduan) {
+            document.getElementById('current_file').innerHTML =
+            `File saat ini: <a href="/media/${file_panduan}" target="_blank">${file_panduan}</a>`;
+            document.getElementById('file_panduan').removeAttribute('required');
+        } else {
+            document.getElementById('current_file').innerHTML = '';
+            document.getElementById('file_panduan').setAttribute('required', 'required');
+        }
+
+        document.getElementById('panduanModalLabel').textContent = 'Edit Panduan';
+        openModal();
+    }
+
+
+
+    let panduanModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const modalEl = document.getElementById('panduanModal');
+    panduanModal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    });
+
+    function openModal() {
+    panduanModal.show();
+    }
+
+    function closeModal() {
+    panduanModal.hide();
+    resetPanduanForm();
+    }
+
+    function resetPanduanForm() {
+    const form = document.getElementById('panduanForm');
+    form.reset();
+    document.getElementById('id').value = '';
+    document.getElementById('current_file').innerHTML = '';
+    document.getElementById('file_panduan').setAttribute('required', 'required');
+    }
+
+
+    
+
+// DELETE
+
+    function deleteData(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            $.ajax({
+                url: `/delete-filepanduan/${id}/`,  
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') 
+                },
+                success: function(response) {
+                    alert(response.message); 
+                    fetchDataPanduan(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+ 
+
+    function showImageModal(imageUrl) {
+        $('#modalImage').attr('src', imageUrl);
+        $('#imageModal').modal('show');
+    }
+    
+</script>
+    
+
+{% endblock %}

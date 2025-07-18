@@ -1,0 +1,461 @@
+{% extends 'adminku/base.html' %}
+
+{% block title %}Manage Chatbot Answers{% endblock %}
+
+{% block header %}
+<h1>Kelola Pengampu Mata Kuliah</h1>
+
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleadmin.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+ <style>
+    #modalImage {
+        width: 100vw;
+        height: auto;
+        max-height: 90vh;
+        object-fit: contain; 
+    }
+    .modal-dialog {
+        max-width: 100vw;
+        margin: 0;
+    }
+
+    select[multiple] {
+        height: 100px;
+    }
+
+</style>
+
+<section class="crud-section">
+    <div class="crud-header">
+        <h3><u>Daftar Pengampu Mata Kuliah</u></h3>
+    </div>
+
+    <div class="modal fade" id="pengampuModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <form id="pengampuForm" onsubmit="savePengampu(event)">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Tambah Pengampu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+
+                <div class="modal-body">
+                <input type="hidden" id="id" name="id">
+                <input type="hidden" id="is_editing" name="is_editing" value="false">
+
+                <div class="mb-3">
+                    <label for="nip" class="form-label">Pilih Dosen:</label>
+                    <select id="nip" name="nip" class="form-select" required></select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="kode_mk" class="form-label">Pilih Mata Kuliah:</label>
+                    <select id="kode_mk" name="kode_mk" class="form-select" required></select>
+                </div>
+
+                <input type="hidden" id="nama_dosen" name="nama_dosen">
+                <input type="hidden" id="nama_mk" name="nama_mk">
+
+                <div class="mb-3">
+                    <label for="kelas" class="form-label">Kelas:</label>
+                    <input type="number" id="kelas" name="kelas" class="form-control" required>
+                </div>
+                </div>
+
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="crud-action" style="text-align: right; margin-top: 10px;">
+        <button class="btn-add" onclick="openModal()">+ Tambah Pengampu Mata Kuliah</button>
+    </div>
+
+    <table class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>NIP</th>
+                <th>Kode MK</th>
+                <th>Nama Dosen</th>
+                <th>Nama Mata Kuliah</th>
+                <th>Kelas</th>
+                <th>Created Time</th>
+                <th>Aksi</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><input type="text" class="form-control filter-input" data-column="0" placeholder="Cari NIP"></th>
+                <th><input type="text" class="form-control filter-input" data-column="1" placeholder="Cari Kode Mk"></th>
+                <th><input type="text" class="form-control filter-input" data-column="2" placeholder="Cari Nama Dosen"></th>
+                <th><input type="text" class="form-control filter-input" data-column="3" placeholder="Cari Mata Kuliah"></th>
+                <th><input type="text" class="form-control filter-input" data-column="4" placeholder="Cari Kelas"></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="pengampuTableBody">
+            <!--AJAX -->
+        </tbody>
+    </table>
+
+    <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-inline">
+            <label for="dataPerPageSelect" class="mr-2">Tampilkan:</label>
+            <select id="dataPerPageSelect" class="form-control" onchange="ubahdataPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <span class="ml-2"></span>
+        </div>
+        <ul class="pagination mb-0" id="pagination"></ul>
+    </nav>
+
+</section>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{% static 'js/pagination1.js' %}"></script> 
+
+<script>
+    
+    $(document).ready(function() {
+        $('#kode_mk').select2({
+            placeholder: "Pilih Mata Kuliah",
+            width: '100%'
+        });
+
+        $('#nip').select2({
+            placeholder: "Pilih Dosen",
+            width: '100%'
+        });
+
+        fetchDosenDanMK();
+        fetchDataPengampu();
+    });
+    
+
+    function fetchDataPengampu() {
+        $.ajax({
+            url: '{% url "data-pengampu" %}',
+            type: 'GET',
+            success: function(response) {
+                allDataPengampu = response.data_pengampu;
+                renderTable();
+            },
+            error: function(xhr) {
+                alert('Error fetching data: ' + xhr.responseText);
+            }
+        });
+    }
+
+
+    function formatToWIB(datetimeString) {
+        const date = new Date(datetimeString);
+        return date.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+    }
+    
+    function renderTable() {
+        const tableBody = $('#pengampuTableBody');
+        tableBody.empty();
+
+        const filterNIP = $('.filter-input[data-column="0"]').val().toLowerCase();
+        const filterKodeMK = $('.filter-input[data-column="1"]').val().toLowerCase();
+        const filterNamaDosen = $('.filter-input[data-column="2"]').val().toLowerCase();
+        const filterNamaMK = $('.filter-input[data-column="3"]').val().toLowerCase();
+        const filterKelas = $('.filter-input[data-column="4"]').val().toLowerCase();
+
+        const filteredData = allDataPengampu.filter(item => {
+            return (
+                item.nip.toString().toLowerCase().includes(filterNIP) &&
+                item.kode_mk.toLowerCase().includes(filterKodeMK) &&
+                item.nama_dosen.toLowerCase().includes(filterNamaDosen) &&
+                item.nama_mk.toLowerCase().includes(filterNamaMK) &&
+                item.kelas.toLowerCase().includes(filterKelas)
+            );
+        });
+
+        const startIndex = (halamanAktif - 1) * dataPerPage;
+        const endIndex = startIndex + dataPerPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+
+        function formatToWIB(datetimeString) {
+            const date = new Date(datetimeString);
+            return date.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+        }
+
+        if (paginatedData.length > 0) {
+            paginatedData.forEach((pgp, index) => {
+                tableBody.append(`
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>${pgp.nip}</td>
+                        <td>${pgp.kode_mk}</td>
+                        <td>${pgp.nama_dosen}</td>
+                        <td>${pgp.nama_mk}</td>
+                        <td>${pgp.kelas}</td>
+                        <td>${formatToWIB(pgp.created_time)}</td>
+                        <td>
+                            <button onclick="editData(${pgp.id}, '${pgp.nip}', '${pgp.kode_mk}', '${pgp.nama_dosen}', '${pgp.nama_mk}', '${pgp.kelas}')" 
+                                    class="btn btn-sm btn-primary mx-1" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData(${pgp.id})" 
+                                    class="btn btn-sm btn-danger mx-1" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="7">Tidak ada data ditemukan.</td></tr>');
+        }
+
+        renderPagination(filteredData.length, renderTable);
+    }
+
+
+
+  
+    function fetchDosenDanMK(callback) {
+        $.ajax({
+            url: '{% url "pengampu-mk" %}',
+            type: 'GET',
+            success: function(response) {
+                const dosenSelect = $('#nip');
+                const mkSelect = $('#kode_mk');
+
+                dosenSelect.empty();
+                mkSelect.empty();
+
+                if (response.daftar_dosen && response.daftar_dosen.length > 0) {
+                    response.daftar_dosen.forEach(dsn => {
+                        dosenSelect.append(
+                            $('<option>', {
+                                value: dsn.nip,
+                                text: dsn.nama_dosen,
+                                'data-nama': dsn.nama_dosen
+                            })
+                        );
+                    });
+                } else {
+                    dosenSelect.append('<option>Tidak ada data dosen</option>');
+                }
+
+                if (response.daftar_mk && response.daftar_mk.length > 0) {
+                    response.daftar_mk.forEach(mk => {
+                        mkSelect.append(
+                            $('<option>', {
+                                value: mk.kode_mk,
+                                text: mk.nama_mk,
+                                'data-nama': mk.nama_mk
+                            })
+                        );
+                    });
+                } else {
+                    mkSelect.append('<option>Tidak ada data mata kuliah</option>');
+                }
+
+                dosenSelect.trigger('change');
+                mkSelect.trigger('change');
+
+                if (callback) callback();
+            },
+            error: function(xhr) {
+                alert('Gagal mengambil data dosen dan mata kuliah: ' + xhr.responseText);
+                if (callback) callback();
+            }
+        });
+    }
+
+
+    $('#nip').on('change', function () {
+        const selected = $(this).find(':selected');
+        $('#nama_dosen').val(selected.data('nama') || '');
+    });
+    
+    $('#kode_mk').on('change', function () {
+        const selected = $(this).find(':selected');
+        $('#nama_mk').val(selected.data('nama') || '');
+    });
+    
+    
+    
+    function savePengampu(event) {
+        event.preventDefault();
+    
+        const id = $('#id').val();
+        const isEditing = $('#is_editing').val() === 'true';
+    
+        const nip = $('#nip').val();
+        const kode_mk = $('#kode_mk').val();
+        const nama_dosen = $('#nama_dosen').val();
+        const nama_mk = $('#nama_mk').val();
+        const kelas = $('#kelas').val();
+
+
+        // Validasi kode_mk dan kelas
+        if (!isEditing) {
+            let isDuplicate = false;
+
+            $('#pengampuTableBody tr').each(function () {
+                const existingKodeMK = $(this).find('td:nth-child(3)').text().trim();
+                const existingKelas = $(this).find('td:nth-child(6)').text().trim();
+
+                if (
+                    existingKodeMK === kode_mk &&
+                    existingKelas === kelas
+                ) {
+                    isDuplicate = true;
+                    return false;
+                }
+            });
+
+        if (isDuplicate) {
+            alert('Kombinasi kode mata kuliah dan kelas sudah ada. Harap pilih yang lain.');
+            return;
+            }
+        }
+    
+        let url = '{% url "create-pengampu" %}';
+        let type = 'POST';
+    
+        if (isEditing) {
+            url = `/edit-pengampu/${id}/`;
+            type = 'POST';
+
+        }
+    
+        const data = {
+            nip: nip,
+            kode_mk: kode_mk,
+            nama_dosen: nama_dosen,
+            nama_mk: nama_mk,
+            kelas: kelas
+        };
+    
+        $.ajax({
+            url: url,
+            type: type,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                alert('Data berhasil disimpan!');
+                fetchDataPengampu();
+                closeModal();
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseText);
+            }
+        });
+    }
+    
+        
+    function editData(id, nip, kode_mk, nama_dosen, nama_mk, kelas) {
+        $('#id').val(id);
+        $('#nama_dosen').val(nama_dosen);
+        $('#nama_mk').val(nama_mk);
+        $('#is_editing').val('true');
+        $('#modalTitle').text('Edit Pengampu');
+
+        openModal(function() {
+            $('#nip').val(nip).trigger('change');
+            $('#kode_mk').val(kode_mk).trigger('change');
+            $('#kelas').val(kelas).trigger('change');
+        }, true); 
+    }
+
+
+
+    let pengampuModal;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('pengampuModal');
+        pengampuModal = new bootstrap.Modal(modalEl, {
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+
+    function openModal(callback, isEdit = false) {
+        if (!isEdit) {
+            $('#pengampuForm')[0].reset();
+            $('#pengampuForm').find('#is_editing').val(false);
+            $('#pengampuForm').find('#id').val('');
+            $('#modalTitle').text('Tambah Pengampu');
+        }
+
+        pengampuModal.show();
+        fetchDosenDanMK(callback);
+    }
+
+
+
+    function closeModal() {
+        pengampuModal.hide();
+    }
+
+
+
+    
+    function deleteData(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            $.ajax({
+                url: `/delete-pengampu/${id}/`,  
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') 
+                },
+                success: function(response) {
+                    alert(response.message); 
+                    fetchDataPengampu(); 
+                },
+                error: function(xhr) {
+                    alert('Error deleting data: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+    
+  
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+  
+    
+</script>    
+
+{% endblock %}
