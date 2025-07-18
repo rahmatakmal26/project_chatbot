@@ -3,3 +3,11 @@ echo # Ignore myenv folder > .gitignore
 echo /myenv/ >> .gitignore
 
 type .gitignore
+
+# Ignore apps subfolder cache
+apps/**/__pycache__/
+apps/**/.pytest_cache/
+
+# Gunakan ini ✅
+apps/**/__pycache__/
+*.pyc
