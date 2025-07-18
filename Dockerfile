@@ -2,23 +2,17 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install pdm
-RUN pip install pdm
-
-# Copy file dependency dulu
+# Salin file dependencies
 COPY pyproject.toml pdm.lock* /app/
 
-# Install dependencies
+# Install dependencies menggunakan pdm atau pip
+RUN pip install pdm
 RUN pdm install --prod
 
-# Copy seluruh kode aplikasi
+# Salin kode aplikasi setelah dependencies diinstall
 COPY . /app/
 
-# Kumpulkan file statis
-RUN python manage.py collectstatic --noinput
+# Jalankan collectstatic setelah semua siap
+RUN pdm run python manage.py collectstatic --noinput
 
-# Expose port
-EXPOSE 8000
-
-# Jalankan aplikasi dengan gunicorn
-CMD ["pdm", "run", "gunicorn", "tga.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["pdm", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
