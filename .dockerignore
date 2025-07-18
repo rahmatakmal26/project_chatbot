@@ -1,0 +1,28 @@
+# Ignore Git files and folders
+.git
+.gitignore
+.gitattributes
+
+# Ignore IDE/editor files
+.idea
+.vscode
+
+# Ignore virtual environments
+venv/
+.env
+
+# Ignore CI/CD configs (kalau gak perlu masuk image)
+.travis.yml
+.gitlab-ci.yml
+.readthedocs.yml
+.pre-commit-config.yaml
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore other unwanted files/folders
+tests/
+docs/
