@@ -26,7 +26,7 @@ html, body {
             text-align: center;
             padding: 20px;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         .content::before {
@@ -54,10 +54,11 @@ html, body {
         .text-container {
             position: relative;
             z-index: 2;
-            width: 120%;
+            width: 100%;
             color: white;
             padding: 20px;
         }
+        
 
         .text-container h1 {
             font-size: 2.5rem;
@@ -113,6 +114,32 @@ html, body {
             color: #ccc;
             opacity: 0.8;
         }
+
+        @media (max-width: 768px) {
+    .text-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .text-container p,
+    .consult-button {
+        font-size: 1rem;
+    }
+
+    .transparent-box {
+        padding: 15px;
+    }
+
+    .consult-button {
+        padding: 14px 20px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .footer-text {
+        font-size: 0.75rem;
+    }
+}
+
 
     </style>
 </head>
