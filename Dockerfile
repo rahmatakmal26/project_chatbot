@@ -1,19 +1,22 @@
+FROM python:3.12-slim as builder
+
+WORKDIR /app
+
+COPY pyproject.toml pdm.lock* /app/
+RUN pip install pdm
+RUN pdm install --prod
+
+COPY . /app/
+RUN pdm run python manage.py collectstatic --noinput
+
+# Stage akhir (lebih ramping)
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# Salin file dependencies
-COPY pyproject.toml pdm.lock* /app/
+COPY --from=builder /app /app
 
-# Install dependencies menggunakan pdm atau pip
-RUN pip install pdm
-RUN pdm install --prod
+RUN pip install pdm  # diperlukan hanya jika pakai pdm run
 
-# Salin kode aplikasi setelah dependencies diinstall
-COPY . /app/
-
-# Jalankan collectstatic setelah semua siap
-RUN pdm run python manage.py collectstatic --noinput
-
-# Jalankan aplikasi dengan gunicorn
-CMD ["pdm", "run", "gunicorn", "tga.wsgi:application", "--bind", "0.0.0.0:8000"]
+EXPOSE 8000
+CMD ["pdm", "run", "gunicorn", "tga.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]

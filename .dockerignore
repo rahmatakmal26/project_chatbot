@@ -19,9 +19,15 @@ venv/
 
 # Ignore Python cache files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*.log
+venv/
+.env
+.idea/
+.git
+tests/
+docs/
+*.pdf
 
 # Ignore other unwanted files/folders
 tests/
