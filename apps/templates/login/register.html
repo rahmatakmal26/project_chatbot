@@ -118,12 +118,19 @@
             font-size: 12px; 
         }
 
+        .input-regis,
+        .container-input {
+            width: 100%;
+            box-sizing: border-box;
+            flex-direction: column;
+        }
+
         .register-form button {
             background-color: #0dcaf0;
             border: none;
             color: #fff;
             padding: 10px;
-            width: 101%;
+            width: 100%;
             cursor: pointer;
             border-radius: 5px;
         }
@@ -158,19 +165,9 @@
             justify-content: space-between;
         }
         
-        .input-regis {
-            width: 97%; 
-        }
+    
         
-        .input-regis label {
-            margin-bottom: 5px; 
-        }
-        
-        .input-regis input {
-            height: 28px; 
-            padding: 5px; 
-            margin-bottom: 10px; 
-        }
+       
 
         .messages {
     margin-bottom: 15px;
@@ -232,12 +229,18 @@
     }
 
     .register-form input {
+        width: 100%;
+        box-sizing: border-box;
         font-size: 13px;
     }
 
     .register-form button {
-        width: 100%;
-    }
+    width: 100% !important;
+    box-sizing: border-box;
+    display: block;
+}
+
+
 }
 
         
@@ -299,7 +302,11 @@
             </div>
         </div> 
 
+            <div class="container-input">
+        <div class="input-regis">
             <button type="submit">Register</button>
+        </div>
+    </div>
         </form>
         <div class="regis">
             Already have an account? <a href="{% url 'login' %}">Sign In</a>
