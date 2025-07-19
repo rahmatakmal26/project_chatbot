@@ -16,7 +16,7 @@ WORKDIR /app
 
 COPY --from=builder /app /app
 
-RUN pip install pdm  # diperlukan hanya jika pakai pdm run
+RUN pip install pdm  
 
 
 
