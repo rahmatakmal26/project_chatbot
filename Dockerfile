@@ -21,4 +21,4 @@ RUN pip install pdm  # diperlukan hanya jika pakai pdm run
 
 
 EXPOSE 8000
-CMD ["pdm", "run", "gunicorn", "tga.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+CMD ["pdm", "run", "gunicorn", "tgga.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
