@@ -9,10 +9,10 @@ RUN pdm install --prod --no-editable
 COPY . /app/
 RUN pdm run python manage.py collectstatic --noinput
 
-# Stage akhir (lebih ramping)
 FROM python:3.12-slim
 
 WORKDIR /app
+ENV PYTHONPATH="/app"
 
 COPY --from=builder /app /app
 
