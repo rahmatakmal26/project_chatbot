@@ -16,9 +16,8 @@ ENV PYTHONPATH="/app"
 
 COPY --from=builder /app /app
 
-RUN pip install pdm  
+RUN pip install pdm
 
-
-
+# GUNAKAN WHITENOISE + GUNICORN
 EXPOSE 8000
 CMD ["pdm", "run", "gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
