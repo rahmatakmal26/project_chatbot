@@ -110,8 +110,8 @@
     {
         "intent": "user.ask_about_machine_learning",
         "utterances": [
-            "Apa itu pembelajaran mesin?",
-            "Bagaimana cara kerja machine learning?",
+            "Apa itu pembelajaran mesin",
+            "Bagaimana cara kerja machine learning",
             "Contoh penggunaan machine learning?"
         ],
         "answers": [
@@ -134,7 +134,7 @@
     {
         "intent": "user.ask_about_ui_ux_design",
         "utterances": [
-            "Apa itu desain UI/UX?",
+            "Apa itu desain UI/UX",
             "Jelaskan tentang UI/UX design",
             "Mengapa desain UI/UX penting?"
         ],
@@ -146,7 +146,7 @@
     {
         "intent": "user.ask_about_blockchain",
         "utterances": [
-            "Apa itu blockchain?",
+            "Apa itu blockchain",
             "Jelaskan tentang teknologi blockchain",
             "Apa keuntungan blockchain?"
         ],
@@ -171,8 +171,7 @@
         "intent": "user.data",
         "utterances": [
             "Tampilkan tabel Mata Kuliah",
-            "Tampilkan tabel Dosen",
-            "Tampilkan tabel Mata Kuliah?"
+            "Tampilkan tabel Dosen"
         ]
     },
     {
@@ -197,19 +196,135 @@
         ]
     },
     {
-        "intent": "kuliah",
-        "utterances": [
-            "kenapa kamu rajin"
-        ],
-        "answers": [
-            "dosen"
-        ]
-    },
-    {
         "intent": "user.data",
         "utterances": [
             "Tampilkan pdf test3"
         ]
+    },
+    {
+        "intent": "prodi tif",
+        "utterances": [
+            "dimana prodi tif"
+        ],
+        "answers": [
+            "di utu bro"
+        ]
+    },
+    {
+        "intent": "prodi tif",
+        "utterances": [
+            "lantai berapa prodi tif"
+        ],
+        "answers": [
+            "lantai 1"
+        ]
+    },
+    {
+        "intent": "kuliah",
+        "utterances": [
+            "bagaimana cara tulis kata pengantar"
+        ],
+        "answers": [
+            "Puji syukur kepada Allah SWT yang telah melimpahkan rahmat serta hidayah-Nya sehingga penulis dapat menyelesaikan Proposal Tugas Akhir. Keberhasilan penulisan ini tidak terlepas dari partisi dan dukungan dari semua pihak yang turut membantu. Oleh sebab itu penulis mengucapkan terima kasih sebanyak-banyak kepada: 1. Bapak Prof. Dr. Ishak Hasan M.Si selaku Rektor Universitas Teuku Umar. 2. Bapak Dr. Ir. Irwansyah ST. M.Eng IPM selaku Dekan Fakultas Teknik Universitas Teuku Umar. 3. Bapak Abdurrahman Ridho S.Kom. M.Kom selaku Ketua Prodi Teknologi Informasi Fakultas Teknik Universitas Teuku Umar sekaligus Dosen Pembimbing I yang telah memberikan bimbingan arahan dan motivasi selama proses penyusunan Proposal Tugas Akhir ini. 4. Bapak Ilham Juliwardi S.Pd. M.Pd.T selaku Dosen Pembimbing II yang telah memberikan saran masukan dan bimbingan dalam menyelesaikan Proposal Tugas Akhir ini. 5. Kedua orang tua yang sangat saya cintai dan sangat saya sayangi terima kasih banyak telah mendidik saya menjadi anak yang baik. Serta memberikan dukugan dan doa kepada saya. 6. Kakak-kakak dan teman-teman tercinta yang telah memberikan dukungan semangat dan motivasi dalam menyelesaikan Proposal Tugas Akhir ini."
+        ]
+    },
+    {
+        "intent": "asa",
+        "utterances": [
+            "Mata kuliah Basis Data bisa diambil di semester berapa?"
+        ],
+        "answers": [
+            "Mata kuliah Basis Data bisa diambil di semester 4."
+        ]
+    },
+    {
+        "intent": "asa",
+        "utterances": [
+            "Mata kuliah Basis Data itu termasuk kategori apa?"
+        ],
+        "answers": [
+            "Mata kuliah Basis Data termasuk kategori wajib."
+        ]
+    },
+    {
+        "intent": "asa",
+        "utterances": [
+            "Mata kuliah Basis Data berapa sks?"
+        ],
+        "answers": [
+            "Mata kuliah Basis Data memiliki 3 SKS."
+        ]
+    },
+    {
+        "intent": "matkul",
+        "utterances": [
+            "Mata kuliah Pemrograman bisa diambil di semester berapa?"
+        ],
+        "answers": [
+            "Mata kuliah Pemrograman bisa diambil di semester 5."
+        ]
+    },
+    {
+        "intent": "matkul",
+        "utterances": [
+            "Mata kuliah Pemrograman itu termasuk kategori apa?"
+        ],
+        "answers": [
+            "Mata kuliah Pemrograman termasuk kategori peminatan."
+        ]
+    },
+    {
+        "intent": "matkul",
+        "utterances": [
+            "Mata kuliah Pemrograman berapa sks?"
+        ],
+        "answers": [
+            "Mata kuliah Pemrograman memiliki 2 SKS."
+        ]
+    },
+    {
+        "intent": "kuliah",
+        "utterances": [
+            "Mata kuliah Basis Data bisa diambil di semester berapa?"
+        ],
+        "answers": [
+            "Mata kuliah Basis Data bisa diambil di semester 4."
+        ]
+    },
+    {
+        "intent": "kuliah",
+        "utterances": [
+            "Mata kuliah Basis Data itu termasuk kategori apa?"
+        ],
+        "answers": [
+            "Mata kuliah Basis Data termasuk kategori wajib."
+        ]
+    },
+    {
+        "intent": "kuliah",
+        "utterances": [
+            "Mata kuliah Basis Data berapa sks?"
+        ],
+        "answers": [
+            "Mata kuliah Basis Data memiliki 3 SKS."
+        ]
+    },
+    {
+        "intent": "dosen",
+        "utterances": [
+            "Dimana alamat bapak rahmat akmal ?"
+        ],
+        "answers": [
+            "Alamat bapak rahmat akmal di Cot Darat."
+        ]
+    },
+    {
+        "intent": "kuliah",
+        "utterances": [
+            "bagaimana cara tulis kata pengantar"
+        ],
+        "answers": [
+            "begini caranya"
+        ]
     }
-   
 ]
