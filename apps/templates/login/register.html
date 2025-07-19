@@ -118,12 +118,13 @@
             font-size: 12px; 
         }
 
-        .input-regis,
-        .container-input {
+        .input-regis {
             width: 100%;
-            box-sizing: border-box;
+            display: flex;
             flex-direction: column;
+            box-sizing: border-box;
         }
+
 
         .register-form button {
             background-color: #0dcaf0;
@@ -184,12 +185,41 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     .login-container {
         flex-direction: column-reverse;
         margin-top: 50px;
         padding: 20px;
     }
+
+    .form-side, .side-panel {
+        width: 100%;
+        padding: 0; /* pastikan tidak ada padding samping */
+    }
+
+    .register-form {
+        padding: 0; /* pastikan tidak ada padding tambahan */
+    }
+
+    .container-input,
+    .input-regis {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+
+    .register-form input,
+    .register-form button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .register-form button {
+        display: block;
+        margin-top: 10px;
+    }
+
 
     .form-side, .side-panel {
         width: 100%; 
@@ -212,10 +242,6 @@
 
     .side-panel p {
         font-size: 13px;
-    }
-
-    .register-form {
-        padding: 20px;
     }
 
     .register-form h2 {
