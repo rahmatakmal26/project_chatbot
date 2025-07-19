@@ -143,7 +143,7 @@
             text-decoration: none;
         }
         .register-form .regis {
-            margin-top: 20px;
+            margin-top: 10px;
             color: #ffffff;
             text-align: center;
         }
@@ -184,6 +184,56 @@
 .messages li.error {
     color: red;
     font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column-reverse; /* Susun form di atas, panel di bawah */
+        margin-top: 50px;
+        padding: 20px;
+    }
+
+    .form-side, .side-panel {
+        width: 100%; /* Penuh di layar HP */
+        padding: 20px;
+    }
+
+    .side-panel {
+        border-radius: 0 0 10px 10px; /* Ujung bawah membulat */
+    }
+
+    .side-panel img {
+        width: 80px; /* Lebih kecil di HP */
+        margin-top: 10px;
+    }
+
+    .side-panel h3 {
+        font-size: 20px;
+        margin-bottom: 1px;
+    }
+
+    .side-panel p {
+        font-size: 13px;
+    }
+
+    .register-form {
+        padding: 20px;
+    }
+
+    .register-form h2 {
+        font-size: 22px;
+        margin-top: 1px;
+        margin-bottom: 10px;
+    }
+
+    .register-form input {
+        font-size: 13px;
+    }
+
+    .register-form button {
+        width: 100%;
+    }
 }
 
         
