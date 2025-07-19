@@ -11,24 +11,23 @@
             padding: 0;
             box-sizing: border-box;
         }
-        html, body {
-            height: 100%;
-        }
-
-
-     .content {
-    min-height: 100vh; /* ubah dari height ke min-height */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    text-align: center;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
+html, body {
+    height: 100%;
 }
 
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
 
         .content::before {
             content: "";
@@ -53,36 +52,12 @@
         }
 
         .text-container {
-    position: relative;
-    z-index: 2;
-    width: 100%;  /* Ganti dari 120% ke 100% */
-    color: white;
-    padding: 20px;
-}
-
-@media (max-width: 768px) {
-    .text-container h1 {
-        font-size: 1.8rem;
-    }
-
-    .text-container p {
-        font-size: 1rem;
-    }
-
-    .consult-button {
-        font-size: 1rem;
-        padding: 14px 20px;
-    }
-
-    .transparent-box {
-        padding: 15px;
-    }
-
-    .footer-text {
-        font-size: 0.75rem;
-    }
-}
-
+            position: relative;
+            z-index: 2;
+            width: 120%;
+            color: white;
+            padding: 20px;
+        }
 
         .text-container h1 {
             font-size: 2.5rem;
