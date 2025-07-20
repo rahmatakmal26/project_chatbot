@@ -298,12 +298,22 @@
     }
 
     .chat-input {
+        position: fixed;
         width: 95%;
         left: 50%;
         bottom: 2%;
         transform: translateX(-50%);
         flex-direction: row;
         padding: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+    .chat-input {
+        width: 95%;
+        bottom: 2%;
+        flex-direction: row;
+        padding: 0.5rem;
+    }
     }
 
     #user_message {
@@ -480,11 +490,14 @@
         const chatInput = document.querySelector('.chat-input');
         if (chatInput.classList.contains('centered-input')) {
             chatInput.classList.remove('centered-input');
-            chatInput.style.bottom = '5%';
-            chatInput.style.top = 'auto';
-            chatInput.style.left = '20%';
-            chatInput.style.transform = 'none';
+            
+            // Biarkan responsif berdasarkan media query, jangan hardcode lagi:
+            chatInput.style.bottom = '';
+            chatInput.style.top = '';
+            chatInput.style.left = '';
+            chatInput.style.transform = '';
         }
+
 
         //  Ambil isi input user
         const message = document.getElementById('user_message').value;
