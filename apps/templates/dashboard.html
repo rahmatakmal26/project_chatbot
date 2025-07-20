@@ -148,11 +148,15 @@ html, body {
 
 @media (max-width: 768px) {
     .footer-text {
-        font-size: 0.6rem; /* lebih kecil dari sebelumnya */
-        padding: 0 10px;    /* biar ga mepet sisi */
-        text-align: center;
+        font-size: 0.45rem;    
+        white-space: nowrap;  
+        overflow: hidden;      
+        text-overflow: ellipsis;
+        max-width: 100vw;      
+        padding: 0 5px;
     }
 }
+
 
 }
 
@@ -170,7 +174,7 @@ html, body {
                 <p class="typing-text" id="typing-text"></p>
                 <a href="{% url 'layanan' %}" class="consult-button">Tanyakan Sekarang!</a>
             </div>
-          <p class="footer-text">© 2025 Program Studi Teknologi Informasi - Universitas Teuku Umar</p>
+          <p class="footer-text">© 2025 Prodi TIF - Universitas Teuku Umar</p>
         </div>
     </div>
 
