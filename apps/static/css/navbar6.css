@@ -133,7 +133,26 @@ body, html {
         margin: 10px 0;
     }
 
+    .navbar a {
+        font-size: 0.85rem; /* perkecil font link */
+        padding: 8px 12px;
+    }
+
+    .navbar .logo {
+        font-size: 1.2rem; /* perkecil font logo */
+    }
+
+    .logout-btn {
+        font-size: 0.85rem; /* perkecil font tombol logout */
+        padding: 6px 12px;
+    }
+
+    .user-info {
+        font-size: 0.85rem;
+    }
+
     .menu-toggle {
         display: block;
     }
 }
+

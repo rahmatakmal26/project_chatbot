@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Konsultasi Program Studi</title>
+    <title>Chatbot Layanan Akademik</title>
     <style>
         * {
             margin: 0;
@@ -136,8 +136,24 @@ html, body {
     }
 
     .footer-text {
-        font-size: 0.75rem;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ccc;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .footer-text {
+        font-size: 0.6rem; /* lebih kecil dari sebelumnya */
+        padding: 0 10px;    /* biar ga mepet sisi */
+        text-align: center;
     }
+}
+
 }
 
 
@@ -150,7 +166,7 @@ html, body {
         <div class="overlay"></div>
         <div class="text-container">
             <div class="transparent-box">
-            <h1>Selamat Datang di Chatbot Konsultasi Akademik<br>Program Studi Teknologi Informasi <br> <br></h1>
+            <h1>Selamat Datang di Chatbot Layanan Akademik<br>Program Studi Teknologi Informasi <br> <br></h1>
                 <p class="typing-text" id="typing-text"></p>
                 <a href="{% url 'layanan' %}" class="consult-button">Tanyakan Sekarang!</a>
             </div>
