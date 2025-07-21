@@ -3,22 +3,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <nav class="navbar">
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
     <div class="logo">Layanan TIF</div>
 
-    <!-- Wrapper untuk toggle + user icon -->
-    <div class="navbar-right">
-        <!-- Toggle Menu Icon -->
-        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-    </div>
-
-   
     <ul class="nav-links">
         <li><a href="{% url 'dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}">Beranda</a></li>
         <li><a href="{% url 'layanan' %}" class="{% if request.path == '/layanan/' %}active{% endif %}">Layanan</a></li>
         <li><a href="{% url 'berita' %}" class="{% if request.path == '/berita/' %}active{% endif %}">Berita</a></li>
     </ul>
 
-  
     <div class="user-info dropdown">
         <span id="user-icon" onclick="toggleDropdown()"><i class="fas fa-user"></i></span>
         <ul class="dropdown-menu" id="user-dropdown">
@@ -27,7 +21,6 @@
         </ul>
     </div>
 </nav>
-
 
 
 <script>
