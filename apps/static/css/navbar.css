@@ -73,12 +73,7 @@ body, html {
     box-shadow: 0 0 8px #06d4f4;
 }
 
-.user-info {
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    margin-right: 10px;
-}
+
 
 .logout-btn {
     background: #ff1b02;
@@ -134,17 +129,12 @@ body, html {
     }
 
     .navbar a {
-        font-size: 0.85rem; /* perkecil font link */
+        font-size: 0.85rem; 
         padding: 8px 12px;
     }
 
     .navbar .logo {
-        font-size: 1.2rem; /* perkecil font logo */
-    }
-
-    .logout-btn {
-        font-size: 0.85rem; /* perkecil font tombol logout */
-        padding: 6px 12px;
+        font-size: 1.2rem; 
     }
 
     .user-info {
@@ -156,3 +146,72 @@ body, html {
     }
 }
 
+.user-info {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-info span#user-icon {
+    font-size: 20px;
+    color: white;
+    padding: 10px;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: rgba(0, 44, 57, 0.95);
+    list-style: none;
+    padding: 10px 0;
+    margin-top: 10px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(6, 212, 244, 0.3); 
+    min-width: 150px;
+    z-index: 999;
+}
+
+.dropdown-menu li {
+    padding: 8px 16px;
+    color: #ffffff; 
+    font-weight: bold;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu li a:hover {
+    color: #ff1b02;
+    text-shadow: 0 0 5px rgba(250, 28, 4, 0.842);
+}
+
+.dropdown.show .dropdown-menu {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .user-info {
+        margin-top: 10px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .user-info span#user-icon {
+        font-size: 1.5rem;
+        padding: 8px;
+    }
+
+    .dropdown-menu {
+        right: 0;
+        left: auto;
+        top: 100%;
+        width: 100%; /* optional: full width on small screens */
+        border-radius: 0 0 10px 10px;
+    }
+
+    .dropdown-menu li {
+        text-align: left;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}

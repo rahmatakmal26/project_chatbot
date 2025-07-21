@@ -1,5 +1,7 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/navbar6.css' %}">
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <nav class="navbar">
     <div class="logo">Layanan TIF</div>
     <ul class="nav-links">
@@ -7,14 +9,14 @@
         <li><a href="{% url 'layanan' %}" class="{% if request.path == '/layanan/' %}active{% endif %}">Layanan</a></li>
         <li><a href="{% url 'berita' %}" class="{% if request.path == '/berita/' %}active{% endif %}">Berita</a></li>
 
-        <li class="user-info">
-            <span id="user-email"></span>
+        <li class="user-info dropdown">
+            <span id="user-icon" onclick="toggleDropdown()"><i class="fas fa-user"></i></span>
+            <ul class="dropdown-menu" id="user-dropdown">
+                <li><span id="user-email">Memuat...</span></li>
+                <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
         </li>
-        <li>
-            <a href="{% url 'logout' %}">
-                <button class="logout-btn">Logout</button>
-            </a>
-        </li>
+
     </ul>
     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
 </nav>
@@ -25,6 +27,19 @@
         var menu = document.querySelector(".nav-links");
         menu.classList.toggle("show");
     }
+
+    function toggleDropdown() {
+        document.querySelector(".user-info").classList.toggle("show");
+    }
+
+
+    document.addEventListener("click", function (e) {
+        const userInfo = document.querySelector(".user-info");
+        if (!userInfo.contains(e.target)) {
+            userInfo.classList.remove("show");
+        }
+    });
+
 
     document.addEventListener("DOMContentLoaded", function () {
     const emailSpan = document.getElementById("user-email");
