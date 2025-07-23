@@ -136,7 +136,6 @@ class DataUserView(View):
         
 
 
-
 class DataBeritaView(View):
     @csrf_exempt
     def get(self, request, id=None):
