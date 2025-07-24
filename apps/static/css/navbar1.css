@@ -73,8 +73,6 @@ body, html {
     box-shadow: 0 0 8px #06d4f4;
 }
 
-
-
 .logout-btn {
     background: #ff1b02;
     padding: 8px 16px;
@@ -101,10 +99,11 @@ body, html {
     transition: transform 0.3s ease;
 }
 
-.menu-toggle:hover {
+.menu-toggle.active {
     transform: rotate(90deg);
+    color: #06d4f4;
+    transition: all 0.3s ease;
 }
-
 
 .user-info {
     position: relative;
@@ -156,19 +155,29 @@ body, html {
     margin-left: auto; 
 }
 
+#user-email {
+    display: inline-block;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
 @media (max-width: 768px) {
     .nav-links {
         display: none;
         flex-direction: column;
         position: absolute;
         top: 70px;
-        left: 10px; /* Ubah dari 'right: 10px' ke 'left: 10px' */
-        background: rgba(0, 0, 0, 0.95);
+        left: 10px;
+        background: rgba(0, 44, 57, 0.95);
         width: 220px;
         padding: 15px;
         border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 4px 12px rgba(6, 212, 244, 0.3); 
     }
+
 
     .nav-links.show {
         display: flex;
@@ -200,6 +209,11 @@ body, html {
 
 
 @media (max-width: 768px) {
+     #user-email {
+        max-width: 120px;
+        font-size: 0.85rem;
+    }
+    
     .navbar {
         flex-wrap: wrap;
     }
@@ -232,6 +246,12 @@ body, html {
     .menu-toggle {
         font-size: 1.7rem;
         padding: 4px;
+    }
+
+    .menu-toggle.active {
+        transform: rotate(90deg);
+        color: #06d4f4;
+        transition: all 0.3s ease;
     }
 
     .user-info span#user-icon {

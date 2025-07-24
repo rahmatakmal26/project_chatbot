@@ -1,9 +1,10 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+<link rel="stylesheet" href="{% static 'css/navbar1.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <nav class="navbar">
-    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <div id="toggleButton" class="menu-toggle" onclick="toggleMenu()">☰</div>
+
 
     <div class="logo">Layanan TIF</div>
 
@@ -27,44 +28,52 @@
     function toggleMenu() {
         var menu = document.querySelector(".nav-links");
         menu.classList.toggle("show");
+        toggleButton.classList.toggle("active");
     }
 
     function toggleDropdown() {
         document.querySelector(".user-info").classList.toggle("show");
     }
 
-
     document.addEventListener("click", function (e) {
+        const navMenu = document.querySelector(".nav-links");
+        const toggleButton = document.querySelector(".menu-toggle");
         const userInfo = document.querySelector(".user-info");
+
+        // Tutup nav menu jika klik di luar nav-links & menu-toggle
+        if (!navMenu.contains(e.target) && !toggleButton.contains(e.target)) {
+            navMenu.classList.remove("show");
+            toggleButton.classList.remove("active"); // Reset ikon toggle
+        }
+
+        // Tutup dropdown user jika klik di luar user-info
         if (!userInfo.contains(e.target)) {
             userInfo.classList.remove("show");
         }
     });
 
-
     document.addEventListener("DOMContentLoaded", function () {
-    const emailSpan = document.getElementById("user-email");
+        const emailSpan = document.getElementById("user-email");
 
-    fetch("/get-email/")
-        .then(response => response.json())
-        .then(data => {
-            emailSpan.textContent = data.email || "Anonymous";
-        })
-        .catch(error => {
-            console.error("Error fetching user info:", error);
-        });
+        fetch("/get-email/")
+            .then(response => response.json())
+            .then(data => {
+                emailSpan.textContent = data.email || "Anonymous";
+            })
+            .catch(error => {
+                console.error("Error fetching user info:", error);
+            });
 
+        const navLinks = document.querySelectorAll(".nav-links a");
+        const navMenu = document.querySelector(".nav-links");
 
-    const navLinks = document.querySelectorAll(".nav-links a");
-    const navMenu = document.querySelector(".nav-links");
-
-    navLinks.forEach(link => {
-        link.addEventListener("click", function () {
-            if (window.innerWidth <= 768) {
-                navMenu.classList.remove("show");
-            }
+        navLinks.forEach(link => {
+            link.addEventListener("click", function () {
+                if (window.innerWidth <= 768) {
+                    navMenu.classList.remove("show");
+                }
+            });
         });
     });
-});
-
 </script>
+
