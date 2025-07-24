@@ -195,26 +195,22 @@
         }
         
      .footer-text {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ccc;
+    opacity: 0.8;
+    margin: 40px auto 20px;
+}
+
+@media (min-width: 769px) {
+    .footer-text {
         position: fixed;
         bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
-        text-align: center;
-        font-size: 0.9rem;
-        color: #ccc;
-        opacity: 0.8;
     }
+}
 
-
-    @media (max-width: 768px) {
-    .footer-text {
-        text-align: center;
-        font-size: 0.9rem;
-        color: #ccc;
-        opacity: 0.8;
-        margin: 40px auto 20px;
-    }
-    }
 
 
 
@@ -232,6 +228,7 @@
 
     <div class="berita-container" id="berita-container">
         <p id="no-data" style="display:none;">Tidak ada data berita.</p>
+        
     </div>
 
     <div id="beritaModal">
@@ -243,7 +240,9 @@
         </div>
         <div></div>
     </div>
+
     <p class="footer-text">© 2025 Prodi TIF - UTU</p>
+    
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
