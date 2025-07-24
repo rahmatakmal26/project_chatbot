@@ -194,16 +194,28 @@
             letter-spacing: 0.5px;
         }
         
-        .footer-text {
-            position: fixed;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 0.9rem;
-            color: #ccc;
-            opacity: 0.8;
-        }
+     .footer-text {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-size: 0.9rem;
+        color: #ccc;
+        opacity: 0.8;
+    }
+
+
+    @media (max-width: 768px) {
+    .footer-text {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #ccc;
+        opacity: 0.8;
+        margin: 40px auto 20px;
+    }
+    }
+
 
 
     </style>
@@ -231,7 +243,7 @@
         </div>
         <div></div>
     </div>
-    <p class="footer-text">© 2025 Program Studi Teknologi Informasi - Universitas Teuku Umar</p>
+    <p class="footer-text">© 2025 Prodi TIF - UTU</p>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
