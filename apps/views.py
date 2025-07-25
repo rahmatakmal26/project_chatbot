@@ -169,7 +169,7 @@ class ChatbotAPI(APIView):
                 best_match = q
                 ratio_tertinggi_lev = ratio_lev #simpan ratio
 
-        if best_match and highest_fuzz_score > 70:
+        if best_match and highest_fuzz_score > 90:
             response_text = best_match.answers or ""
             print(f"Respons yang dipilih (score={ratio_tertinggi_lev}): {response_text}")
 
