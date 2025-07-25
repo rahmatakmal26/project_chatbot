@@ -120,8 +120,9 @@ body, html {
 .dropdown-menu {
     display: none;
     position: absolute;
-    left: 0;
-    right: auto;
+    right: 0;        
+    left: auto;        
+    top: 100%;         
     background-color: rgba(0, 44, 57, 0.95);
     list-style: none;
     padding: 10px 0;
@@ -131,6 +132,7 @@ body, html {
     min-width: 150px;
     z-index: 999;
 }
+
 
 .dropdown-menu li {
     padding: 8px 16px;
@@ -170,7 +172,7 @@ body, html {
         flex-direction: column;
         position: absolute;
         top: 70px;
-        left: 10px;
+        left: 1px;
         background: rgba(0, 44, 57, 0.95);
         width: 150px;
         padding: 15px;

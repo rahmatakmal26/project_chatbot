@@ -333,8 +333,6 @@
     }
 }
 
-
-
     </style>
 
 </head>
@@ -469,7 +467,6 @@
     }
 
 
-    
     function sendMessage() {
 
         if (isTyping) {
@@ -482,7 +479,7 @@
                 suggestions.innerHTML = '';
                 suggestions.style.display = 'none';
             }
-            suggestionDisplayedOnce = true;
+            suggestionDisplayedOnce = false;
 
         const chatbox = document.getElementById('chatbox');
 
@@ -676,7 +673,7 @@
     inputField.addEventListener("input", () => {
         const userInput = inputField.value;
 
-        if (userInput.length >= 2 && !suggestionDisplayedOnce) {
+        if (userInput.length >= 2) {
             fetch('/get-suggestions/', {
                 method: 'POST',
                 headers: {

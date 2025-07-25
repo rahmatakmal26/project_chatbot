@@ -28,8 +28,6 @@ import ast
 from apps.models import ChatbotInteraksi
 from fuzzywuzzy import fuzz
 import numpy as np
-import Levenshtein
-
     
 def clean_input(user_input, words_to_remove=None):
     if words_to_remove is None:
@@ -152,26 +150,21 @@ class ChatbotAPI(APIView):
         questions = ChatbotInteraksi.objects.all()
 
         best_match = None
-        ratio_tertinggi_lev = 0
         highest_fuzz_score = -1
 
-        for q in questions: #loop
+        for q in questions:
             questions_text = normalize_text_sentence(q.questions, normalization_dict) if q.questions else ""
-            
-            dist = Levenshtein.distance(normalized_text, questions_text)
-            max_len = max(len(normalized_text), len(questions_text)) or 1 
-            ratio_lev = (1 - dist / max_len) * 100
             
             ratio_fuzz = fuzz.token_set_ratio(normalized_text, questions_text)
 
             if ratio_fuzz > highest_fuzz_score:
                 highest_fuzz_score = ratio_fuzz
                 best_match = q
-                ratio_tertinggi_lev = ratio_lev #simpan ratio
 
-        if best_match and highest_fuzz_score > 90:
+        if best_match and highest_fuzz_score > 70 and len(normalized_text.split()) >= 3:
+
             response_text = best_match.answers or ""
-            print(f"Respons yang dipilih (score={ratio_tertinggi_lev}): {response_text}")
+            print(f"Respons yang dipilih (score={highest_fuzz_score}): {response_text}")
 
             file_extensions = {
                 "images": ['.jpg', '.jpeg', '.png', '.gif'],
