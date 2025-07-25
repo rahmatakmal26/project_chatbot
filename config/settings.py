@@ -26,7 +26,14 @@ if not SECRET_KEY:
 DEBUG = True
 
 # ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
-ALLOWED_HOSTS = ["projectchatbot-production.up.railway.app"]
+# ALLOWED_HOSTS = ["projectchatbot-production.up.railway.app"]
+
+ALLOWED_HOSTS = ['projectchatbot-production.up.railway.app', '127.0.0.1', 'localhost']
+
+# Untuk memperbolehkan origin dari domain production
+CSRF_TRUSTED_ORIGINS = [
+    'https://projectchatbot-production.up.railway.app',
+]
 
 ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", default="local")
 
