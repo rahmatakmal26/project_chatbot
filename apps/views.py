@@ -28,8 +28,14 @@ import ast
 from apps.models import ChatbotInteraksi
 from fuzzywuzzy import fuzz
 import numpy as np
-import logging
-logger = logging.getLogger(__name__)
+
+import nltk
+
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
     
 def clean_input(user_input, words_to_remove=None):
     if words_to_remove is None:
@@ -166,8 +172,7 @@ class ChatbotAPI(APIView):
         if best_match and highest_fuzz_score > 70 and len(normalized_text.split()) >= 3:
 
             response_text = best_match.answers or ""
-            # print(f"Respons yang dipilih (score={highest_fuzz_score}): {response_text}")
-            logger.error(f"Respons yang dipilih (score={highest_fuzz_score}): {response_text}")
+            print(f"Respons yang dipilih (score={highest_fuzz_score}): {response_text}")
 
             file_extensions = {
                 "images": ['.jpg', '.jpeg', '.png', '.gif'],

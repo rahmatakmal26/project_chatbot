@@ -534,11 +534,7 @@
         .then(data => {
             console.log("Respons dari backend:", data); 
 
-            if (!data.jawaban || !data.jawaban.text) {
-    console.warn("Jawaban kosong:", data.jawaban);  // Tambahan debug
-  
-}
-
+            if (!data.jawaban || !data.jawaban.text) return;
 
             const rawText = data.jawaban.text; 
             // const messageContent = rawText.replace(/\n/g, "<br>"); 
