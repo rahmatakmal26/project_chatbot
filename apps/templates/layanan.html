@@ -277,9 +277,16 @@
         
         @media (max-width: 600px) {
             .welcome-message {
-                top: 120px; 
-                font-size: 1.2rem;
-                padding-bottom: 2rem;
+                top: 80px; /* sebelumnya 120px atau 200px */
+                font-size: 1rem;
+                padding: 0.75rem;
+                width: 90%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            #chatbox {
+                height: 65vh; /* supaya tidak bertabrakan dengan welcome message */
             }
 
             .chat-input {
