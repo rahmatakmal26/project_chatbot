@@ -30,11 +30,7 @@ from fuzzywuzzy import fuzz
 import numpy as np
 
 import nltk
-
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
+nltk.download('punkt')
 
     
 def clean_input(user_input, words_to_remove=None):
