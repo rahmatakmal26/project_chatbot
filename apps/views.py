@@ -30,7 +30,12 @@ from fuzzywuzzy import fuzz
 import numpy as np
 
 import nltk
-nltk.download('punkt')
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    print("punkt not found, downloading...")
+    nltk.download('punkt')
+
 
     
 def clean_input(user_input, words_to_remove=None):
@@ -202,7 +207,7 @@ class ChatbotAPI(APIView):
             suggestion_text = "\n(Tidak ada saran yang tersedia)"
 
         return {
-            "text": f"Maaf, saya belum memiliki jawaban yang tepat untuk pertanyaan Anda. Mungkin maksud Anda:<br>",
+            "text": f"Maaf, saya belum memiliki jawaban yang tepat untuk pertanyaan Anda. Mungkin maksud Anda:<br>{suggestion_text}",
             "file": None,
             "type": None
         }
