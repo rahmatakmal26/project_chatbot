@@ -32,6 +32,36 @@ import numpy as np
 import nltk
 nltk.download('punkt')
 
+
+
+
+from collections import Counter
+from nltk.tokenize import word_tokenize
+
+def get_prompt_suggestions(tokens, normalization_dict, stopwords, max_suggestions=5):
+    questions = ChatbotInteraksi.objects.all()
+    suggestions = []
+    seen_prefix = set()
+
+    for q in questions:
+        if not q.questions:
+            continue
+
+        utterance = q.questions.lower()
+        utterance_tokens = word_tokenize(utterance)
+        normalized_utterance_tokens = normalize_text(utterance_tokens, normalization_dict, stopwords)
+
+        match_count = sum((Counter(tokens) & Counter(normalized_utterance_tokens)).values())
+        if match_count > 0:
+            prefix = " ".join(utterance.split()[:3])  # Untuk menghindari duplikat mirip
+            if prefix not in seen_prefix:
+                suggestions.append((utterance, match_count))
+                seen_prefix.add(prefix)
+
+    suggestions = sorted(suggestions, key=lambda x: x[1], reverse=True)[:max_suggestions]
+    return [s[0] for s in suggestions]
+
+
     
 def clean_input(user_input, words_to_remove=None):
     if words_to_remove is None:
@@ -195,7 +225,8 @@ class ChatbotAPI(APIView):
 
             return {"text": response_text, "file": None, "type": None}
 
-        suggestions = self.get_prompt_suggestions(normalized_tokens)
+        suggestions = get_prompt_suggestions(normalized_tokens, normalization_dict, stopwords, max_suggestions=2)
+
         if suggestions:
             suggestion_text = "<br><br>- " + "<br>- ".join(suggestions)
         else:
@@ -208,31 +239,31 @@ class ChatbotAPI(APIView):
         }
    
     
-    def get_prompt_suggestions(self, tokens):
-        questions = ChatbotInteraksi.objects.all()
-        suggestions = []
-        seen_prefix = set()
+    # def get_prompt_suggestions(self, tokens):
+    #     questions = ChatbotInteraksi.objects.all()
+    #     suggestions = []
+    #     seen_prefix = set()
 
-        for q in questions:
-            if not q.questions:
-                continue
+    #     for q in questions:
+    #         if not q.questions:
+    #             continue
 
-            utterance = q.questions.lower()
-            utterance_tokens = word_tokenize(utterance)
-            normalized_utterance_tokens = normalize_text(utterance_tokens, normalization_dict, stopwords)
-            match_count = sum((Counter(tokens) & Counter(normalized_utterance_tokens)).values())
+    #         utterance = q.questions.lower()
+    #         utterance_tokens = word_tokenize(utterance)
+    #         normalized_utterance_tokens = normalize_text(utterance_tokens, normalization_dict, stopwords)
+    #         match_count = sum((Counter(tokens) & Counter(normalized_utterance_tokens)).values())
 
-            if match_count > 0:
-                prefix = " ".join(utterance.split()[:3])
+    #         if match_count > 0:
+    #             prefix = " ".join(utterance.split()[:3])
 
-                if prefix not in seen_prefix:
-                    suggestions.append((utterance, match_count))
-                    seen_prefix.add(prefix)
+    #             if prefix not in seen_prefix:
+    #                 suggestions.append((utterance, match_count))
+    #                 seen_prefix.add(prefix)
 
-        suggestions = sorted(suggestions, key=lambda x: x[1], reverse=True)[:2]
+    #     suggestions = sorted(suggestions, key=lambda x: x[1], reverse=True)[:2]
 
 
-        return [s[0] for s in suggestions]
+    #     return [s[0] for s in suggestions]
     
 
 class ChatbotSuggestionAPI(APIView):
@@ -244,7 +275,7 @@ class ChatbotSuggestionAPI(APIView):
         tokens = word_tokenize(user_input)
         normalized_tokens = normalize_text(tokens, normalization_dict, stopwords)
 
-        suggestions = self.get_prompt_suggestions(normalized_tokens)
+        suggestions = get_prompt_suggestions(normalized_tokens, normalization_dict, stopwords, max_suggestions=2)
 
         return Response({"suggestions": suggestions}, status=status.HTTP_200_OK)
 
