@@ -30,6 +30,8 @@ from fuzzywuzzy import fuzz
 import numpy as np
 
 import nltk
+nltk.data.path.append('./nltk_data')
+
 nltk.download('punkt')
 
 
