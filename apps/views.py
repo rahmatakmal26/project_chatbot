@@ -36,7 +36,7 @@ except LookupError:
     print("punkt not found, downloading...")
     nltk.download('punkt')
 
-#
+
     
 def clean_input(user_input, words_to_remove=None):
     if words_to_remove is None:
@@ -202,8 +202,8 @@ class ChatbotAPI(APIView):
 
         suggestions = self.get_prompt_suggestions(normalized_tokens)
         if suggestions:
-            suggestion_text = "<br><br>- " + "<br>- ".join(suggestions)
-        else:
+      
+        
             suggestion_text = "\n(Tidak ada saran yang tersedia)"
 
         return {
