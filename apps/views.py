@@ -30,24 +30,7 @@ from fuzzywuzzy import fuzz
 import numpy as np
 
 import nltk
-# Gunakan direktori writable di Railway
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Tentukan path nltk_data di Railway (atau lokal kalau testing)
-nltk_data_dir = os.path.join('/tmp', 'nltk_data')  # /tmp untuk Railway
-
-# Pastikan direktori ada
-os.makedirs(nltk_data_dir, exist_ok=True)
-
-# Tambahkan path ke nltk
-nltk.data.path.append(nltk_data_dir)
-
-# Cek dan download punkt jika belum ada
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    print("punkt not found, downloading...")
-    nltk.download('punkt', download_dir=nltk_data_dir)
+nltk.download('punkt')
 
     
 def clean_input(user_input, words_to_remove=None):
