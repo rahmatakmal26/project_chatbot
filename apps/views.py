@@ -194,18 +194,25 @@ class ChatbotAPI(APIView):
                 return {"text": response_text, "file": None, "type": None}
 
             return {"text": response_text, "file": None, "type": None}
-
-        suggestions = self.get_prompt_suggestions(normalized_tokens)
-        if suggestions:
-            suggestion_text = "<br><br>- " + "<br>- ".join(suggestions)
-        else:
-            suggestion_text = "\n(Tidak ada saran yang tersedia)"
+        
 
         return {
-            "text": f"Maaf, saya belum memiliki jawaban yang tepat untuk pertanyaan Anda. Mungkin maksud Anda:<br>{suggestion_text}",
+            "text": f"Maaf, saya belum memiliki jawaban yang tepat untuk pertanyaan Anda. Mungkin maksud Anda:<br>",
             "file": None,
             "type": None
         }
+
+        # suggestions = self.get_prompt_suggestions(normalized_tokens)
+        # if suggestions:
+        #     suggestion_text = "<br><br>- " + "<br>- ".join(suggestions)
+        # else:
+        #     suggestion_text = "\n(Tidak ada saran yang tersedia)"
+
+        # return {
+        #     "text": f"Maaf, saya belum memiliki jawaban yang tepat untuk pertanyaan Anda. Mungkin maksud Anda:<br>{suggestion_text}",
+        #     "file": None,
+        #     "type": None
+        # }
    
     
     def get_prompt_suggestions(self, tokens):
