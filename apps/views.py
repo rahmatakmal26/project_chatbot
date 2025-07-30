@@ -35,11 +35,6 @@ nltk.data.path.append('./nltk_data')
 nltk.download('punkt')
 
 
-
-
-from collections import Counter
-from nltk.tokenize import word_tokenize
-
 def get_prompt_suggestions(tokens, normalization_dict, stopwords, max_suggestions=5):
     questions = ChatbotInteraksi.objects.all()
     suggestions = []
@@ -55,7 +50,7 @@ def get_prompt_suggestions(tokens, normalization_dict, stopwords, max_suggestion
 
         match_count = sum((Counter(tokens) & Counter(normalized_utterance_tokens)).values())
         if match_count > 0:
-            prefix = " ".join(utterance.split()[:3])  # Untuk menghindari duplikat mirip
+            prefix = " ".join(utterance.split()[:3])  
             if prefix not in seen_prefix:
                 suggestions.append((utterance, match_count))
                 seen_prefix.add(prefix)

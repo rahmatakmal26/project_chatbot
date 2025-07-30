@@ -480,12 +480,6 @@
             return;
         }
 
-        const suggestions = document.getElementById('suggestions');
-            if (suggestions) {
-                suggestions.innerHTML = '';
-                suggestions.style.display = 'none';
-            }
-            suggestionDisplayedOnce = false;
 
         const chatbox = document.getElementById('chatbox');
 
@@ -493,13 +487,20 @@
         const chatInput = document.querySelector('.chat-input');
         if (chatInput.classList.contains('centered-input')) {
             chatInput.classList.remove('centered-input');
-            
-            // Biarkan responsif berdasarkan media query, jangan hardcode lagi:
+
             chatInput.style.bottom = '';
             chatInput.style.top = '';
             chatInput.style.left = '';
             chatInput.style.transform = '';
+
+        // Sembunyikan kotak saran saat pindah tampilan
+        const suggestions = document.getElementById('suggestions');
+        if (suggestions) {
+            suggestions.innerHTML = '';
+            suggestions.style.display = 'none';
         }
+        }
+
 
 
         //  Ambil isi input user
@@ -677,7 +678,15 @@
 
 
     inputField.addEventListener("input", () => {
-        const userInput = inputField.value;
+    const userInput = inputField.value;
+
+    // Jangan munculkan suggestion kalau input sudah tidak centered lagi
+    const chatInput = document.querySelector('.chat-input');
+        if (!chatInput.classList.contains('centered-input')) {
+            suggestionsBox.innerHTML = '';
+            suggestionsBox.style.display = 'none';
+            return;
+        }
 
         if (userInput.length >= 2) {
             fetch('/get-suggestions/', {
@@ -706,7 +715,7 @@
                     });
 
                     suggestionsBox.style.display = 'block';
-                    suggestionDisplayedOnce = false; 
+                    suggestionDisplayedOnce = false;
                 }
             })
             .catch(error => console.error('Error fetching suggestions:', error));
@@ -715,6 +724,7 @@
             suggestionsBox.style.display = 'none';
         }
     });
+
 
 
     document.querySelector('.btn-close').addEventListener('click', function() {
