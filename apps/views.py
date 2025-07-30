@@ -186,13 +186,15 @@ class ChatbotAPI(APIView):
         for q in questions:
             questions_text = normalize_text_sentence(q.questions, normalization_dict) if q.questions else ""
             
-            ratio_fuzz = fuzz.token_set_ratio(normalized_text, questions_text)
+            # ratio_fuzz = fuzz.token_set_ratio(normalized_text, questions_text)
+            ratio_fuzz = fuzz.ratio(normalized_text, questions_text)
+
 
             if ratio_fuzz > highest_fuzz_score:
                 highest_fuzz_score = ratio_fuzz
                 best_match = q
 
-        if best_match and highest_fuzz_score > 70 and len(normalized_text.split()) >= 3:
+        if best_match and highest_fuzz_score > 45 and len(normalized_text.split()) >= 1:
 
             response_text = best_match.answers or ""
             print(f"Respons yang dipilih (score={highest_fuzz_score}): {response_text}")
